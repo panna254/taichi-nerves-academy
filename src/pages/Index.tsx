@@ -1,13 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Helmet } from "react-helmet-async";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import HeroSection from "@/components/home/HeroSection";
+import ResourcesSection from "@/components/home/ResourcesSection";
+import FeaturesSection from "@/components/home/FeaturesSection";
+import CTASection from "@/components/home/CTASection";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <>
+      <Helmet>
+        <title>Taichi Nerves - Master Health Sciences Education</title>
+        <meta 
+          name="description" 
+          content="Comprehensive medical education platform with video lectures, notes, podcasts, and quizzes. Join thousands of students mastering health sciences with Taichi Nerves." 
+        />
+        <meta name="keywords" content="medical education, health sciences, video lectures, study notes, medical quizzes, online learning" />
+      </Helmet>
+      
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          <HeroSection />
+          <ResourcesSection />
+          <FeaturesSection />
+          <CTASection />
+        </main>
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };
 
