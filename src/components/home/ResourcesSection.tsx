@@ -1,39 +1,37 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Video, FileText, Headphones, HelpCircle, Lock, ArrowRight } from "lucide-react";
+import { Lock, ArrowRight } from "lucide-react";
 
 const ResourcesSection = () => {
+  const fallbackImage = "/placeholder.svg";
+
   const resources = [
     {
-      icon: Video,
+      image: "https://picsum.photos/seed/video-lectures/900/675",
       title: "Video Lectures",
       description: "High-quality video content covering all major health science topics, explained in clear, engaging ways.",
       href: "/resources/lectures",
-      color: "bg-primary",
       count: "500+ Videos",
     },
     {
-      icon: FileText,
+      image: "https://picsum.photos/seed/study-notes/900/675",
       title: "Study Notes",
       description: "Comprehensive notes and study guides that complement our video lectures for deeper understanding.",
       href: "/resources/notes",
-      color: "bg-secondary",
       count: "200+ Notes",
     },
     {
-      icon: Headphones,
+      image: "https://picsum.photos/seed/podcast/900/675",
       title: "Podcast",
       description: "Learn on the go with our podcast episodes featuring expert discussions and topic reviews.",
       href: "/resources/podcast",
-      color: "bg-primary-light",
       count: "100+ Episodes",
     },
     {
-      icon: HelpCircle,
+      image: "https://picsum.photos/seed/quizzes/900/675",
       title: "Quizzes",
       description: "Test your knowledge with interactive quizzes designed to reinforce learning and prepare for exams.",
       href: "/resources/quizzes",
-      color: "bg-accent",
       count: "1000+ Questions",
     },
   ];
@@ -61,29 +59,40 @@ const ResourcesSection = () => {
             <Link
               key={resource.title}
               to={resource.href}
-              className="group relative overflow-hidden rounded-2xl bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-2xl bg-card shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              {/* Icon */}
-              <div className={`mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl ${resource.color}`}>
-                <resource.icon className="h-7 w-7 text-primary-foreground" />
+              <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                <img
+                  src={resource.image}
+                  alt={resource.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => {
+                    e.currentTarget.src = fallbackImage;
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
+                <div className="absolute left-4 bottom-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-card-foreground backdrop-blur-sm">
+                  {resource.count}
+                </div>
               </div>
 
-              {/* Content */}
-              <h3 className="font-display text-xl font-bold text-card-foreground">
-                {resource.title}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {resource.description}
-              </p>
+              <div className="p-6 space-y-2">
+                <h3 className="font-display text-xl font-bold text-card-foreground">
+                  {resource.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {resource.description}
+                </p>
 
-              {/* Count Badge */}
-              <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                {resource.count}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <div className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+                  {resource.count}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
 
-              {/* Lock Indicator */}
               <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted">
                 <Lock className="h-4 w-4 text-muted-foreground" />
               </div>

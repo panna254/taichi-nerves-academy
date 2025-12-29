@@ -38,26 +38,26 @@ const Header = () => {
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-1 lg:flex">
           <Link to="/">
-            <Button variant={isActive("/") ? "navActive" : "nav"} size="sm">
+            <Button variant={isActive("/") ? "navActive" : "nav"} size="sm" className="font-semibold">
               Home
             </Button>
           </Link>
 
           <Link to="/topics">
-            <Button variant={isActive("/topics") ? "navActive" : "nav"} size="sm">
+            <Button variant={isActive("/topics") ? "navActive" : "nav"} size="sm" className="font-semibold">
               Topics
             </Button>
           </Link>
           
           <Link to="/membership">
-            <Button variant={isActive("/membership") ? "navActive" : "nav"} size="sm">
+            <Button variant={isActive("/membership") ? "navActive" : "nav"} size="sm" className="font-semibold">
               Membership
             </Button>
           </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="nav" size="sm" className="gap-1">
+              <Button variant="nav" size="sm" className="gap-1 font-semibold">
                 Resources
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -75,13 +75,13 @@ const Header = () => {
           </DropdownMenu>
 
           <Link to="/hire-tutor">
-            <Button variant={isActive("/hire-tutor") ? "navActive" : "nav"} size="sm">
+            <Button variant={isActive("/hire-tutor") ? "navActive" : "nav"} size="sm" className="font-semibold">
               Hire a Tutor
             </Button>
           </Link>
 
           <Link to="/donate">
-            <Button variant={isActive("/donate") ? "navActive" : "nav"} size="sm">
+            <Button variant={isActive("/donate") ? "navActive" : "nav"} size="sm" className="font-semibold">
               Donate
             </Button>
           </Link>
@@ -120,17 +120,17 @@ const Header = () => {
         <div className="border-t border-border bg-background lg:hidden animate-fade-in">
           <div className="container mx-auto space-y-1 px-4 py-4">
             <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start font-semibold">
                 Home
               </Button>
             </Link>
             <Link to="/topics" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start font-semibold">
                 Topics
               </Button>
             </Link>
             <Link to="/membership" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start font-semibold">
                 Membership
               </Button>
             </Link>
@@ -139,7 +139,7 @@ const Header = () => {
               <p className="px-4 text-sm font-semibold text-muted-foreground">Resources</p>
               {resourceItems.map((item) => (
                 <Link key={item.name} to={item.href} onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 pl-8">
+                  <Button variant="ghost" className="w-full justify-start gap-2 pl-8 font-semibold">
                     <item.icon className="h-4 w-4 text-primary" />
                     {item.name}
                   </Button>
@@ -148,12 +148,12 @@ const Header = () => {
             </div>
 
             <Link to="/hire-tutor" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start font-semibold">
                 Hire a Tutor
               </Button>
             </Link>
             <Link to="/donate" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start font-semibold">
                 Donate
               </Button>
             </Link>

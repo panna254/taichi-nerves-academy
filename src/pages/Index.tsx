@@ -5,6 +5,7 @@ import HeroSection from "@/components/home/HeroSection";
 import ResourcesSection from "@/components/home/ResourcesSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import CTASection from "@/components/home/CTASection";
+import RecentLecturesSection from "@/components/home/RecentLecturesSection";
 
 const Index = () => {
   return (
@@ -22,6 +23,7 @@ const Index = () => {
         <Header />
         <main className="flex-1">
           <HeroSection />
+          <RecentLecturesSection />
           <ResourcesSection />
           <FeaturesSection />
           <CTASection />

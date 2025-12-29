@@ -15,6 +15,7 @@ import Donate from "./pages/Donate";
 import HireTutor from "./pages/HireTutor";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import LectureDetail from "./pages/LectureDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/hire-tutor" element={<HireTutor />} />
+            <Route path="/lectures/:slug" element={<LectureDetail />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

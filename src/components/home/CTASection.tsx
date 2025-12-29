@@ -13,12 +13,6 @@ const CTASection = () => {
 
       <div className="container relative mx-auto px-4 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-bold text-accent-foreground">
-            <Sparkles className="h-4 w-4" />
-            Limited Time Offer
-          </div>
-
           <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl lg:text-5xl">
             Ready to Excel in
             <span className="block">Health Sciences?</span>
