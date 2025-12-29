@@ -20,7 +20,12 @@ const Footer = () => {
     {
       title: "Topics",
       links: [
-        { name: "Ueke Zote", href: "/topics" },
+        { name: "Human Anatomy", href: "/topics" },
+        { name: "Physiology", href: "/topics" },
+        { name: "Pharmacology", href: "/topics" },
+        { name: "Pathology", href: "/topics" },
+        { name: "Microbiology", href: "/topics" },
+        { name: "Biochemistry", href: "/topics" },
       ],
     },
     {

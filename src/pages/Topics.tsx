@@ -67,7 +67,7 @@ const Topics = () => {
             <div className="container mx-auto px-4 lg:px-8">
               <div className="mx-auto max-w-2xl text-center">
                 <h1 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl lg:text-5xl">
-                  Ueke Zote
+                  Topics
                 </h1>
                 <p className="mt-4 text-lg text-primary-foreground/80">
                   Explore all health science topics covered in our comprehensive curriculum

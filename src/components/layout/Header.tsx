@@ -37,6 +37,12 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-1 lg:flex">
+          <Link to="/">
+            <Button variant={isActive("/") ? "navActive" : "nav"} size="sm">
+              Home
+            </Button>
+          </Link>
+
           <Link to="/topics">
             <Button variant={isActive("/topics") ? "navActive" : "nav"} size="sm">
               Topics
@@ -113,6 +119,11 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="border-t border-border bg-background lg:hidden animate-fade-in">
           <div className="container mx-auto space-y-1 px-4 py-4">
+            <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">
+                Home
+              </Button>
+            </Link>
             <Link to="/topics" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
                 Topics
