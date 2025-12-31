@@ -1,6 +1,6 @@
 import { useCallback, memo } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Youtube, Twitter, Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { BookOpen, Youtube, Instagram, Facebook, Video, Mail, Phone } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -53,11 +53,12 @@ const Footer = () => {
     },
   ];
 
+  // Real social media links for Taichi Nerves
   const socialLinks = [
-    { name: "YouTube", icon: Youtube, href: "#" },
-    { name: "Twitter", icon: Twitter, href: "#" },
-    { name: "Instagram", icon: Instagram, href: "#" },
-    { name: "LinkedIn", icon: Linkedin, href: "#" },
+    { name: "YouTube", icon: Youtube, href: "https://www.youtube.com/channel/UCD36ZaQgkuLzBNR7CuCfJCA" },
+    { name: "Facebook", icon: Facebook, href: "https://www.facebook.com/share/17VDn8YasC/" },
+    { name: "Instagram", icon: Instagram, href: "https://www.instagram.com/taichinerves" },
+    { name: "TikTok", icon: Video, href: "https://tiktok.com/@taichinerves" },
   ];
 
   return (
@@ -93,8 +94,10 @@ const Footer = () => {
                 <a
                   key={social.name}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                  aria-label={social.name}
+                  aria-label={`Follow us on ${social.name}`}
                 >
                   <social.icon className="h-5 w-5" />
                 </a>
