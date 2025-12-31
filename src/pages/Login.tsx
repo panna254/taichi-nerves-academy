@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,9 +28,28 @@ const Login = () => {
         {/* Left Side - Form */}
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 mb-8">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
+            {/* Back to Home Link */}
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+
+            {/* Logo + Site Name */}
+            <Link to="/" className="flex items-center gap-3 mb-8">
+              <img 
+                src="/logo.png" 
+                alt="Taichi Nerves" 
+                className="h-10 w-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallbackIcon) fallbackIcon.style.display = 'flex';
+                }}
+              />
+              <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
                 <BookOpen className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="font-display text-xl font-bold text-foreground">
@@ -101,6 +120,19 @@ const Login = () => {
                 Sign up
               </Link>
             </p>
+
+            <div className="mt-8 pt-6 border-t border-border">
+              <Link
+                to="/admin/login"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Lock className="h-4 w-4" />
+                Admin Dashboard Access
+              </Link>
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                For staff and content administrators
+              </p>
+            </div>
           </div>
         </div>
 

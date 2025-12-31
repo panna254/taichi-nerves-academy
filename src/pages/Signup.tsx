@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Mail, Lock, Eye, EyeOff, User, CreditCard, Check } from "lucide-react";
+import { BookOpen, Mail, Lock, Eye, EyeOff, User, CreditCard, Check, ArrowLeft } from "lucide-react";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -66,9 +66,28 @@ const Signup = () => {
         {/* Right Side - Form */}
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 mb-8">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
+            {/* Back to Home Link */}
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+
+            {/* Logo + Site Name */}
+            <Link to="/" className="flex items-center gap-3 mb-8">
+              <img 
+                src="/logo.png" 
+                alt="Taichi Nerves" 
+                className="h-10 w-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallbackIcon) fallbackIcon.style.display = 'flex';
+                }}
+              />
+              <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
                 <BookOpen className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="font-display text-xl font-bold text-foreground">
@@ -146,12 +165,10 @@ const Signup = () => {
               <div className="rounded-xl bg-muted p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-foreground">Monthly Subscription</p>
+                    <p className="font-semibold text-foreground">Monthly Membership</p>
                     <p className="text-sm text-muted-foreground">Full access to all resources</p>
                   </div>
-                  <p className="font-display text-2xl font-bold text-primary">
-                    Ksh 500<span className="text-sm font-normal text-muted-foreground">/mo</span>
-                  </p>
+                  <p className="font-semibold text-primary">Pricing shared at checkout</p>
                 </div>
               </div>
 
@@ -173,6 +190,19 @@ const Signup = () => {
                 Login
               </Link>
             </p>
+
+            <div className="mt-8 pt-6 border-t border-border">
+              <Link
+                to="/admin/login"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Lock className="h-4 w-4" />
+                Admin Dashboard Access
+              </Link>
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                For staff and content administrators
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -78,12 +78,8 @@ const Membership = () => {
                     <h2 className="font-display text-2xl font-bold text-card-foreground">
                       Monthly Subscription
                     </h2>
-                    <div className="mt-4 flex items-baseline justify-center gap-1">
-                      <span className="font-display text-5xl font-bold text-primary">Ksh 500</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      Full access to all resources
+                    <p className="mt-4 text-lg text-muted-foreground">
+                      Simple monthly membership with full access to all resources
                     </p>
                   </div>
 

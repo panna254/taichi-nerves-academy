@@ -17,6 +17,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import LectureDetail from "./pages/LectureDetail";
 import NotFound from "./pages/NotFound";
+import AdminRouter from "./pages/admin/AdminRouter";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/donate" element={<Donate />} />
             <Route path="/hire-tutor" element={<HireTutor />} />
             <Route path="/lectures/:slug" element={<LectureDetail />} />
+            <Route path="/admin/*" element={<AdminRouter />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

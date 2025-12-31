@@ -25,11 +25,25 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
+        {/* Logo + Site Name */}
+        <Link to="/" className="flex items-center gap-3">
+          {/* PNG Logo Image with icon fallback */}
+          <img 
+            src="/logo.png" 
+            alt="Taichi Nerves" 
+            className="h-10 w-auto object-contain"
+            onError={(e) => {
+              // Fallback: Show icon if logo.png doesn't exist
+              e.currentTarget.style.display = 'none';
+              const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+              if (fallbackIcon) fallbackIcon.style.display = 'flex';
+            }}
+          />
+          {/* Fallback icon (shown only if logo.png fails to load) */}
+          <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
             <BookOpen className="h-5 w-5 text-primary-foreground" />
           </div>
+          {/* Site Name - Always visible */}
           <span className="font-display text-xl font-bold text-foreground">
             Taichi<span className="text-primary">Nerves</span>
           </span>

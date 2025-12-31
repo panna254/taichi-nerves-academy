@@ -56,12 +56,26 @@ const Footer = () => {
     <footer className="border-t border-border bg-muted/30">
       <div className="container mx-auto px-4 py-12 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
-          {/* Brand Section */}
+          {/* Brand Section with Logo */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
+            <Link to="/" className="flex items-center gap-3">
+              {/* Logo - Same as navbar */}
+              <img 
+                src="/logo.png" 
+                alt="Taichi Nerves" 
+                className="h-10 w-auto object-contain"
+                onError={(e) => {
+                  // Fallback: Show icon if logo.png doesn't exist
+                  e.currentTarget.style.display = 'none';
+                  const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallbackIcon) fallbackIcon.style.display = 'flex';
+                }}
+              />
+              {/* Fallback icon (shown only if logo.png fails to load) */}
+              <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
                 <BookOpen className="h-5 w-5 text-primary-foreground" />
               </div>
+              {/* Site Name - Always visible */}
               <span className="font-display text-xl font-bold text-foreground">
                 Taichi<span className="text-primary">Nerves</span>
               </span>
