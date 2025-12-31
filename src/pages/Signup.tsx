@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,13 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
+  // PERFORMANCE: Memoize logo error handler
+  const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.style.display = 'none';
+    const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+    if (fallbackIcon) fallbackIcon.style.display = 'flex';
+  }, []);
 
   const membershipBenefits = [
     "Unlimited access to all video lectures",
@@ -81,11 +88,7 @@ const Signup = () => {
                 src="/logo.png" 
                 alt="Taichi Nerves" 
                 className="h-10 w-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (fallbackIcon) fallbackIcon.style.display = 'flex';
-                }}
+                onError={handleLogoError}
               />
               <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
                 <BookOpen className="h-5 w-5 text-primary-foreground" />

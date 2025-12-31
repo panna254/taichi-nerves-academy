@@ -1,8 +1,16 @@
+import { useCallback, memo } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, Youtube, Twitter, Instagram, Linkedin, Mail, Phone } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
+  // PERFORMANCE: Memoize logo error handler
+  const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.style.display = 'none';
+    const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+    if (fallbackIcon) fallbackIcon.style.display = 'flex';
+  }, []);
 
   const footerSections = [
     {
@@ -64,12 +72,7 @@ const Footer = () => {
                 src="/logo.png" 
                 alt="Taichi Nerves" 
                 className="h-10 w-auto object-contain"
-                onError={(e) => {
-                  // Fallback: Show icon if logo.png doesn't exist
-                  e.currentTarget.style.display = 'none';
-                  const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (fallbackIcon) fallbackIcon.style.display = 'flex';
-                }}
+                onError={handleLogoError}
               />
               {/* Fallback icon (shown only if logo.png fails to load) */}
               <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
@@ -140,4 +143,5 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+// PERFORMANCE: Memoize Footer - it's static content that rarely needs to re-render
+export default memo(Footer);

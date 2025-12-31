@@ -166,6 +166,8 @@ function toast({ ...props }: Toast) {
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
+  // PERFORMANCE FIX: Removed `state` from dependencies to prevent infinite loop
+  // setState is stable, listeners only need to be managed on mount/unmount
   React.useEffect(() => {
     listeners.push(setState);
     return () => {
@@ -174,7 +176,7 @@ function useToast() {
         listeners.splice(index, 1);
       }
     };
-  }, [state]);
+  }, []); // Empty dependency array - only run on mount/unmount
 
   return {
     ...state,

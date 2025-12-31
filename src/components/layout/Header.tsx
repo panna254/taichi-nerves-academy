@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, BookOpen, Video, FileText, Headphones, HelpCircle } from "lucide-react";
@@ -12,6 +12,13 @@ import {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  // PERFORMANCE: Memoize logo error handler to prevent recreation on every render
+  const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.style.display = 'none';
+    const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
+    if (fallbackIcon) fallbackIcon.style.display = 'flex';
+  }, []);
 
   const resourceItems = [
     { name: "Video Lectures", href: "/resources/lectures", icon: Video },
@@ -32,12 +39,7 @@ const Header = () => {
             src="/logo.png" 
             alt="Taichi Nerves" 
             className="h-10 w-auto object-contain"
-            onError={(e) => {
-              // Fallback: Show icon if logo.png doesn't exist
-              e.currentTarget.style.display = 'none';
-              const fallbackIcon = e.currentTarget.nextElementSibling as HTMLElement;
-              if (fallbackIcon) fallbackIcon.style.display = 'flex';
-            }}
+            onError={handleLogoError}
           />
           {/* Fallback icon (shown only if logo.png fails to load) */}
           <div className="hidden h-10 w-10 items-center justify-center rounded-xl bg-gradient-hero">
@@ -191,4 +193,6 @@ const Header = () => {
   );
 };
 
-export default Header;
+// PERFORMANCE: Memoize Header to prevent unnecessary re-renders
+// Only re-renders when location changes (route navigation)
+export default memo(Header);
