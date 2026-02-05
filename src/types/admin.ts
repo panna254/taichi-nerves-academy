@@ -55,4 +55,9 @@ export interface DashboardStats {
   activeUsers: number;
 }
 
+export interface AuthSession {
+  token: string;
+  user: User;
+}
+
 

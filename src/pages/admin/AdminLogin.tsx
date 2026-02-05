@@ -2,26 +2,47 @@ import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Role } from "@/types/admin";
+import { adminApi } from "@/services/adminApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Lock, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Lock, ShieldCheck, ArrowLeft, Loader2 } from "lucide-react";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { login } = useAdminAuth();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState<Role>("ADMIN");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Basic validation
     if (!email.includes("@")) {
       setError("Please use a valid work email");
       return;
     }
-    login(email, role);
-    navigate("/admin");
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const session = await adminApi.login(email, password, role);
+      login(session);
+      navigate("/admin");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sign in. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +78,22 @@ const AdminLogin = () => {
               placeholder="you@taichinerves.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-card-foreground" htmlFor="password">
+              Password
+            </label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
               required
             />
           </div>
@@ -65,7 +102,7 @@ const AdminLogin = () => {
             <label className="text-sm font-semibold text-card-foreground" htmlFor="role">
               Select role
             </label>
-            <Select value={role} onValueChange={(val) => setRole(val as Role)}>
+            <Select value={role} onValueChange={(val) => setRole(val as Role)} disabled={isLoading}>
               <SelectTrigger id="role">
                 <SelectValue />
               </SelectTrigger>
@@ -84,9 +121,18 @@ const AdminLogin = () => {
             </div>
           )}
 
-          <Button type="submit" className="w-full gap-2">
-            <Lock className="h-4 w-4" />
-            Sign in
+          <Button type="submit" className="w-full gap-2" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              <>
+                <Lock className="h-4 w-4" />
+                Sign in
+              </>
+            )}
           </Button>
         </form>
       </div>
