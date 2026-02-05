@@ -1,0 +1,22 @@
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+
+interface RequireAuthProps {
+  children: JSX.Element;
+}
+
+/**
+ * Protected route component that requires authentication
+ * Redirects to login page if user is not authenticated
+ */
+export const RequireAuth = ({ children }: RequireAuthProps) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    // Redirect to login page, saving the attempted location
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+};

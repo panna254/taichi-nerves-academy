@@ -1,15 +1,32 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/hooks/useAuth";
+import { userApi } from "@/services/userApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
+  
+  // Redirect if already authenticated
+  const from = (location.state as { from?: Location })?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   // PERFORMANCE: Memoize logo error handler
   const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -18,10 +35,33 @@ const Login = () => {
     if (fallbackIcon) fallbackIcon.style.display = 'flex';
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Login logic will be implemented with backend
-    console.log("Login attempt:", { email, password });
+    setError(null);
+
+    // Basic validation
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const session = await userApi.login({ email, password });
+      login(session);
+      // Redirect to the page user was trying to access, or home
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sign in. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,6 +119,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -100,6 +141,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10"
+                    disabled={isLoading}
                     required
                   />
                   <button
@@ -112,8 +154,21 @@ const Login = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" size="lg">
-                Login
+              {error && (
+                <div className="rounded-xl bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </form>
 

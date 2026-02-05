@@ -1,18 +1,31 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/hooks/useAuth";
+import { userApi } from "@/services/userApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Mail, Lock, Eye, EyeOff, User, CreditCard, Check, ArrowLeft } from "lucide-react";
+import { BookOpen, Mail, Lock, Eye, EyeOff, User, CreditCard, Check, ArrowLeft, Loader2 } from "lucide-react";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+  
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // PERFORMANCE: Memoize logo error handler
   const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -30,10 +43,42 @@ const Signup = () => {
     "Mobile and desktop access",
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Signup logic will be implemented with backend
-    console.log("Signup attempt:", formData);
+    setError(null);
+
+    // Basic validation
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const session = await userApi.signup(formData);
+      login(session);
+      navigate("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -117,6 +162,7 @@ const Signup = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="pl-10"
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -133,6 +179,7 @@ const Signup = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="pl-10"
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -149,6 +196,7 @@ const Signup = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className="pl-10 pr-10"
+                    disabled={isLoading}
                     required
                   />
                   <button
@@ -164,6 +212,12 @@ const Signup = () => {
                 </p>
               </div>
 
+              {error && (
+                <div className="rounded-xl bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
               {/* Pricing Info */}
               <div className="rounded-xl bg-muted p-4">
                 <div className="flex items-center justify-between">
@@ -175,8 +229,15 @@ const Signup = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" size="lg">
-                Create Account & Subscribe
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  "Create Account & Subscribe"
+                )}
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">

@@ -1,9 +1,16 @@
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Button } from "@/components/ui/button";
 import { Bell, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminTopbar = () => {
   const { user, logout } = useAdminAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
 
   return (
     <header className="flex items-center justify-between border-b border-border bg-card/60 px-4 py-3 lg:px-6">
@@ -27,7 +34,7 @@ const AdminTopbar = () => {
               <p className="text-sm font-semibold text-card-foreground">{user.name}</p>
               <p className="text-xs text-muted-foreground">{user.role}</p>
             </div>
-            <Button variant="ghost" size="sm" className="gap-1" onClick={logout}>
+            <Button variant="ghost" size="sm" className="gap-1" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
               Logout
             </Button>

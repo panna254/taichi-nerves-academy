@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -45,30 +46,32 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          {/* Suspense boundary for lazy-loaded routes */}
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/membership" element={<Membership />} />
-              <Route path="/resources/:type" element={<Resources />} />
-              <Route path="/topics" element={<Topics />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/donate" element={<Donate />} />
-              <Route path="/hire-tutor" element={<HireTutor />} />
-              <Route path="/lectures/:slug" element={<LectureDetail />} />
-              <Route path="/admin/*" element={<AdminRouter />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            {/* Suspense boundary for lazy-loaded routes */}
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/membership" element={<Membership />} />
+                <Route path="/resources/:type" element={<Resources />} />
+                <Route path="/topics" element={<Topics />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/donate" element={<Donate />} />
+                <Route path="/hire-tutor" element={<HireTutor />} />
+                <Route path="/lectures/:slug" element={<LectureDetail />} />
+                <Route path="/admin/*" element={<AdminRouter />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
