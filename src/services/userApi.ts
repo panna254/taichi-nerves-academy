@@ -1,261 +1,108 @@
 import { AuthSession, LoginData, SignupData, User } from "@/types/user";
-import { apiClient } from "@/lib/apiClient";
-import { API_ENDPOINTS, USE_MOCK_API } from "@/config/api";
+import { supabase } from "@/lib/supabase";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-// ============================================================================
-// MOCK API (for development/testing when backend is not available)
-// ============================================================================
-
-const simulateDelay = <T>(data: T, delay = 400) =>
-  new Promise<T>((resolve) => setTimeout(() => resolve(data), delay));
-
-const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2));
-
-// Mock users database (in real app, this would be a backend API)
-let mockUsers: User[] = [
-  {
-    id: "u-1",
-    name: "John Doe",
-    email: "john@example.com",
+/**
+ * Map Supabase Auth user to app User type (exported for use in useAuth)
+ */
+export function mapSupabaseUserToUser(sbUser: SupabaseUser): User {
+  const metadata = (sbUser.user_metadata ?? {}) as Record<string, unknown>;
+  const name = (metadata.full_name as string) ?? (metadata.name as string) ?? sbUser.email?.split("@")[0] ?? "User";
+  return {
+    id: sbUser.id,
+    email: sbUser.email ?? "",
+    name,
+    avatar: sbUser.user_metadata?.avatar_url as string | undefined,
     membershipStatus: "active",
-    membershipExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "u-2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    membershipStatus: "active",
-    membershipExpiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date().toISOString(),
-  },
-];
+    membershipExpiresAt: undefined,
+    createdAt: sbUser.created_at,
+  };
+}
 
-// Mock password storage (in real app, passwords would be hashed on backend)
-const mockPasswords: Record<string, string> = {
-  "john@example.com": "password123",
-  "jane@example.com": "password123",
-};
-
-// ============================================================================
-// MOCK API IMPLEMENTATION
-// ============================================================================
-
-const mockUserApi = {
+/**
+ * User API – Supabase Auth + optional profiles.
+ * All user emails and passwords are stored and validated by Supabase.
+ */
+export const userApi = {
+  /**
+   * Sign in with email and password (Supabase Auth)
+   */
   async login(credentials: LoginData): Promise<AuthSession> {
-    await simulateDelay(null, 500);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
+    });
 
-    const user = mockUsers.find((u) => u.email === credentials.email);
-    if (!user) {
-      throw new Error("Invalid email or password");
+    if (error) {
+      if (error.message.includes("Invalid login credentials")) {
+        throw new Error("Invalid email or password");
+      }
+      throw new Error(error.message || "Failed to sign in");
     }
 
-    const storedPassword = mockPasswords[credentials.email];
-    if (!storedPassword || storedPassword !== credentials.password) {
-      throw new Error("Invalid email or password");
+    if (!data.session || !data.user) {
+      throw new Error("Failed to sign in");
     }
 
-    const token = `user-token-${user.id}-${Date.now()}`;
-    return { token, user };
+    return {
+      token: data.session.access_token,
+      user: mapSupabaseUserToUser(data.user),
+    };
   },
 
+  /**
+   * Sign up with name, email, and password (Supabase Auth).
+   * Name is stored in user_metadata; passwords are hashed by Supabase.
+   */
   async signup(data: SignupData): Promise<AuthSession> {
-    await simulateDelay(null, 600);
-
-    const existingUser = mockUsers.find((u) => u.email === data.email);
-    if (existingUser) {
-      throw new Error("An account with this email already exists");
-    }
-
     if (data.password.length < 8) {
       throw new Error("Password must be at least 8 characters long");
     }
 
-    const newUser: User = {
-      id: uid(),
-      name: data.name,
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
-      membershipStatus: "active",
-      membershipExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString(),
-    };
+      password: data.password,
+      options: {
+        data: {
+          full_name: data.name,
+          name: data.name,
+        },
+      },
+    });
 
-    mockUsers.push(newUser);
-    mockPasswords[data.email] = data.password;
-
-    const token = `user-token-${newUser.id}-${Date.now()}`;
-    return { token, user: newUser };
-  },
-
-  async getCurrentUser(token: string): Promise<User> {
-    await simulateDelay(null, 300);
-    const userId = token.split("-")[2];
-    const user = mockUsers.find((u) => u.id === userId);
-    if (!user) {
-      throw new Error("Invalid token");
+    if (error) {
+      if (error.message.includes("already registered")) {
+        throw new Error("An account with this email already exists");
+      }
+      throw new Error(error.message || "Failed to create account");
     }
-    return user;
+
+    if (!authData.session || !authData.user) {
+      // Email confirmation may be enabled; user is created but no session yet
+      throw new Error(
+        "Account created. Please check your email to confirm your account before signing in."
+      );
+    }
+
+    return {
+      token: authData.session.access_token,
+      user: mapSupabaseUserToUser(authData.user),
+    };
+  },
+
+  /**
+   * Get current user from Supabase session
+   */
+  async getCurrentUser(): Promise<User | null> {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
+    return mapSupabaseUserToUser(session.user);
+  },
+
+  /**
+   * Sign out (Supabase Auth)
+   */
+  async logout(): Promise<void> {
+    await supabase.auth.signOut();
   },
 };
-
-// ============================================================================
-// REAL API IMPLEMENTATION (connects to backend)
-// ============================================================================
-
-const realUserApi = {
-  /**
-   * Login user with email and password
-   * 
-   * Backend should:
-   * - Validate email/password
-   * - Hash password comparison (never send plain passwords)
-   * - Return JWT token and user data
-   * - Set secure HTTP-only cookies if using cookie-based auth
-   */
-  async login(credentials: LoginData): Promise<AuthSession> {
-    const response = await apiClient.post<{
-      token: string;
-      user: User;
-      expiresIn?: number; // Token expiration in seconds
-    }>(API_ENDPOINTS.AUTH.LOGIN, credentials);
-
-    return {
-      token: response.token,
-      user: response.user,
-    };
-  },
-
-  /**
-   * Register new user
-   * 
-   * Backend should:
-   * - Validate email format and uniqueness
-   * - Validate password strength (min 8 chars, complexity rules)
-   * - Hash password before storing (bcrypt, argon2, etc.)
-   * - Create user record in database
-   * - Send verification email (optional)
-   * - Return JWT token and user data
-   */
-  async signup(data: SignupData): Promise<AuthSession> {
-    const response = await apiClient.post<{
-      token: string;
-      user: User;
-      expiresIn?: number;
-    }>(API_ENDPOINTS.AUTH.SIGNUP, data);
-
-    return {
-      token: response.token,
-      user: response.user,
-    };
-  },
-
-  /**
-   * Get current authenticated user
-   * 
-   * Backend should:
-   * - Validate JWT token from Authorization header
-   * - Return user data from database
-   * - Handle token expiration gracefully
-   */
-  async getCurrentUser(token: string): Promise<User> {
-    const response = await apiClient.get<{ user: User }>(API_ENDPOINTS.AUTH.ME);
-    return response.user;
-  },
-};
-
-// ============================================================================
-// EXPORTED API (switches between mock and real based on config)
-// ============================================================================
-
-/**
- * User API Service
- * 
- * Automatically switches between mock and real API based on environment configuration.
- * Set VITE_USE_MOCK_API=true or omit VITE_API_BASE_URL to use mock API.
- * 
- * To use real backend:
- * 1. Set VITE_API_BASE_URL in .env file (e.g., http://localhost:3000/api)
- * 2. Ensure backend implements the required endpoints (see API_DOCUMENTATION.md)
- */
-export const userApi = USE_MOCK_API ? mockUserApi : realUserApi;
-
-// ============================================================================
-// REAL API IMPLEMENTATION (connects to backend)
-// ============================================================================
-
-const realUserApi = {
-  /**
-   * Login user with email and password
-   * 
-   * Backend should:
-   * - Validate email/password
-   * - Hash password comparison (never send plain passwords)
-   * - Return JWT token and user data
-   * - Set secure HTTP-only cookies if using cookie-based auth
-   */
-  async login(credentials: LoginData): Promise<AuthSession> {
-    const response = await apiClient.post<{
-      token: string;
-      user: User;
-      expiresIn?: number; // Token expiration in seconds
-    }>(API_ENDPOINTS.AUTH.LOGIN, credentials);
-
-    return {
-      token: response.token,
-      user: response.user,
-    };
-  },
-
-  /**
-   * Register new user
-   * 
-   * Backend should:
-   * - Validate email format and uniqueness
-   * - Validate password strength (min 8 chars, complexity rules)
-   * - Hash password before storing (bcrypt, argon2, etc.)
-   * - Create user record in database
-   * - Send verification email (optional)
-   * - Return JWT token and user data
-   */
-  async signup(data: SignupData): Promise<AuthSession> {
-    const response = await apiClient.post<{
-      token: string;
-      user: User;
-      expiresIn?: number;
-    }>(API_ENDPOINTS.AUTH.SIGNUP, data);
-
-    return {
-      token: response.token,
-      user: response.user,
-    };
-  },
-
-  /**
-   * Get current authenticated user
-   * 
-   * Backend should:
-   * - Validate JWT token from Authorization header
-   * - Return user data from database
-   * - Handle token expiration gracefully
-   */
-  async getCurrentUser(token: string): Promise<User> {
-    const response = await apiClient.get<{ user: User }>(API_ENDPOINTS.AUTH.ME);
-    return response.user;
-  },
-};
-
-// ============================================================================
-// EXPORTED API (switches between mock and real based on config)
-// ============================================================================
-
-/**
- * User API Service
- * 
- * Automatically switches between mock and real API based on environment configuration.
- * Set VITE_USE_MOCK_API=true or omit VITE_API_BASE_URL to use mock API.
- * 
- * To use real backend:
- * 1. Set VITE_API_BASE_URL in .env file (e.g., http://localhost:3000/api)
- * 2. Ensure backend implements the required endpoints (see API_DOCUMENTATION.md)
- */
-export const userApi = USE_MOCK_API ? mockUserApi : realUserApi;

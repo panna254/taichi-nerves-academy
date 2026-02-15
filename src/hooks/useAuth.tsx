@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { AuthSession, User } from "@/types/user";
-
-const STORAGE_KEY = "user_auth_session";
+import { supabase } from "@/lib/supabase";
+import { mapSupabaseUserToUser } from "@/services/userApi";
 
 type AuthContextValue = {
   user: User | null;
@@ -13,57 +14,44 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// Helper functions for localStorage operations
-const saveSession = (session: AuthSession) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-  } catch (error) {
-    console.error("Failed to save session to localStorage:", error);
-  }
-};
-
-const loadSession = (): AuthSession | null => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
-    return JSON.parse(stored) as AuthSession;
-  } catch (error) {
-    console.error("Failed to load session from localStorage:", error);
-    return null;
-  }
-};
-
-const clearSession = () => {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch (error) {
-    console.error("Failed to clear session from localStorage:", error);
-  }
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  // Restore session from localStorage on mount
-  useEffect(() => {
-    const session = loadSession();
-    if (session && session.user && session.token) {
-      setUser(session.user);
-      setToken(session.token);
+  const setSession = (session: Session | null) => {
+    if (!session?.user) {
+      setUser(null);
+      setToken(null);
+      return;
     }
+    setUser(mapSupabaseUserToUser(session.user));
+    setToken(session.access_token);
+  };
+
+  // Restore session from Supabase on mount and subscribe to auth changes
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = (session: AuthSession) => {
     setUser(session.user);
     setToken(session.token);
-    saveSession(session);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setToken(null);
-    clearSession();
   };
 
   const isAuthenticated = !!user && !!token;
