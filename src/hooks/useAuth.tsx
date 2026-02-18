@@ -3,6 +3,7 @@ import type { Session } from "@supabase/supabase-js";
 import { AuthSession, User } from "@/types/user";
 import { supabase } from "@/lib/supabase";
 import { mapSupabaseUserToUser } from "@/services/userApi";
+import { isSupabaseConfigured } from "@/config/supabase";
 
 type AuthContextValue = {
   user: User | null;
@@ -30,17 +31,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Restore session from Supabase on mount and subscribe to auth changes
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    if (!isSupabaseConfigured) {
+      console.warn("⚠️ Supabase not configured. Authentication features will be limited.");
+      return;
+    }
+
+    let mounted = true;
+    
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (mounted) {
+          setSession(session);
+        }
+      } catch (error) {
+        console.error("Failed to initialize authentication:", error);
+        if (mounted) {
+          setSession(null);
+        }
+      }
+    };
+
+    initializeAuth();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      if (mounted) {
+        setSession(session);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = (session: AuthSession) => {
@@ -49,9 +74,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setToken(null);
+    if (!isSupabaseConfigured) {
+      console.warn("⚠️ Supabase not configured. Cannot logout.");
+      setUser(null);
+      setToken(null);
+      return;
+    }
+    
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    } finally {
+      setUser(null);
+      setToken(null);
+    }
   };
 
   const isAuthenticated = !!user && !!token;
