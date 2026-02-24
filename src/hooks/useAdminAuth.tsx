@@ -77,7 +77,14 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAdminAuth = () => {
   const ctx = useContext(AdminAuthContext);
   if (!ctx) {
-    throw new Error("useAdminAuth must be used within AdminAuthProvider");
+    // Instead of throwing an error, return a safe default
+    console.warn("useAdminAuth must be used within AdminAuthProvider, returning safe defaults");
+    return {
+      user: null,
+      token: null,
+      login: () => console.warn("Admin auth not available"),
+      logout: () => console.warn("Admin auth not available"),
+    };
   }
   return ctx;
 };

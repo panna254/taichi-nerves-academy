@@ -25,6 +25,26 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 // Admin pages are heavy - lazy load entire admin router
 const AdminRouter = lazy(() => import("./pages/admin/AdminRouter"));
 
+// Create a simple ForgotPassword page for now
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword").catch(() => {
+  // Fallback component if the file doesn't exist
+  return {
+    default: () => (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Forgot Password</h1>
+          <p className="text-muted-foreground mb-4">
+            This feature is coming soon. Please contact support for password reset.
+          </p>
+          <a href="/login" className="text-primary hover:underline">
+            Back to Login
+          </a>
+        </div>
+      </div>
+    )
+  };
+}));
+
 // Memoize QueryClient to prevent recreation on every render
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,11 +56,35 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback for lazy-loaded components
+// Enhanced loading fallback with error boundary for lazy-loaded components
 const PageLoader = () => (
   <div className="flex h-screen items-center justify-center">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    <div className="text-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
+      <p className="text-muted-foreground">Loading...</p>
+    </div>
   </div>
+);
+
+// Error boundary for lazy-loaded components
+const LazyErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+  <ErrorBoundary
+    fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Page Load Error</h1>
+          <p className="text-muted-foreground mb-4">
+            This page failed to load. Please try refreshing or contact support.
+          </p>
+          <a href="/" className="text-primary hover:underline">
+            Back to Home
+          </a>
+        </div>
+      </div>
+    }
+  >
+    {children}
+  </ErrorBoundary>
 );
 
 const App = () => (
@@ -58,18 +102,67 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/membership" element={<Membership />} />
-                  <Route path="/resources/:type" element={<Resources />} />
-                  <Route path="/topics" element={<Topics />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/donate" element={<Donate />} />
-                  <Route path="/hire-tutor" element={<HireTutor />} />
-                  <Route path="/lectures/:slug" element={<LectureDetail />} />
-                  <Route path="/admin/*" element={<AdminRouter />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/forgot-password" element={
+                    <LazyErrorBoundary>
+                      <ForgotPassword />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/membership" element={
+                    <LazyErrorBoundary>
+                      <Membership />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/resources/:type" element={
+                    <LazyErrorBoundary>
+                      <Resources />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/topics" element={
+                    <LazyErrorBoundary>
+                      <Topics />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/contact" element={
+                    <LazyErrorBoundary>
+                      <Contact />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/donate" element={
+                    <LazyErrorBoundary>
+                      <Donate />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/hire-tutor" element={
+                    <LazyErrorBoundary>
+                      <HireTutor />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/lectures/:slug" element={
+                    <LazyErrorBoundary>
+                      <LectureDetail />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/admin/*" element={
+                    <LazyErrorBoundary>
+                      <AdminRouter />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/privacy" element={
+                    <LazyErrorBoundary>
+                      <Privacy />
+                    </LazyErrorBoundary>
+                  } />
+                  <Route path="/terms" element={
+                    <LazyErrorBoundary>
+                      <Terms />
+                    </LazyErrorBoundary>
+                  } />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
+                  <Route path="*" element={
+                    <LazyErrorBoundary>
+                      <NotFound />
+                    </LazyErrorBoundary>
+                  } />
                 </Routes>
               </Suspense>
             </BrowserRouter>

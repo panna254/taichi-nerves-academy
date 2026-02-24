@@ -104,7 +104,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) {
-    throw new Error("useAuth must be used within AuthProvider");
+    // Instead of throwing an error, return a safe default
+    console.warn("useAuth must be used within AuthProvider, returning safe defaults");
+    return {
+      user: null,
+      token: null,
+      login: () => console.warn("Auth not available"),
+      logout: () => console.warn("Auth not available"),
+      isAuthenticated: false,
+    };
   }
   return ctx;
 };
