@@ -5,8 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { AuthProvider } from "@/hooks/useAuth";
-import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -30,7 +28,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes - reduce unnecessary refetches
-      gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime in v5)
+      cacheTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false, // Prevent aggressive refetching
     },
   },
@@ -44,40 +42,36 @@ const PageLoader = () => (
 );
 
 const App = () => (
-  <ErrorBoundary>
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              {/* Suspense boundary for lazy-loaded routes */}
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/membership" element={<Membership />} />
-                  <Route path="/resources/:type" element={<Resources />} />
-                  <Route path="/topics" element={<Topics />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/donate" element={<Donate />} />
-                  <Route path="/hire-tutor" element={<HireTutor />} />
-                  <Route path="/lectures/:slug" element={<LectureDetail />} />
-                  <Route path="/admin/*" element={<AdminRouter />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/terms" element={<Terms />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  </ErrorBoundary>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          {/* Suspense boundary for lazy-loaded routes */}
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/membership" element={<Membership />} />
+              <Route path="/resources/:type" element={<Resources />} />
+              <Route path="/topics" element={<Topics />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/hire-tutor" element={<HireTutor />} />
+              <Route path="/lectures/:slug" element={<LectureDetail />} />
+              <Route path="/admin/*" element={<AdminRouter />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
