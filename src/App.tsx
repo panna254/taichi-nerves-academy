@@ -5,10 +5,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/hooks/useAuth";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { SetupRequired } from "@/components/SetupRequired";
+import { isSupabaseConfigured } from "@/config/supabase";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
+
+// Debug utility for development
+import "./utils/debugApp";
 
 // Lazy-load less frequently visited pages to reduce initial bundle size
 const Membership = lazy(() => import("./pages/Membership"));
@@ -29,7 +36,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes - reduce unnecessary refetches
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime in v5)
       refetchOnWindowFocus: false, // Prevent aggressive refetching
     },
   },
@@ -66,119 +73,105 @@ const LazyErrorBoundary = ({ children }: { children: React.ReactNode }) => (
   </ErrorBoundary>
 );
 
-const App = () => (
-<<<<<<< HEAD
-  <ErrorBoundary>
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              {/* Suspense boundary for lazy-loaded routes */}
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/membership" element={
-                    <LazyErrorBoundary>
-                      <Membership />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/resources/:type" element={
-                    <LazyErrorBoundary>
-                      <Resources />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/topics" element={
-                    <LazyErrorBoundary>
-                      <Topics />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/contact" element={
-                    <LazyErrorBoundary>
-                      <Contact />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/donate" element={
-                    <LazyErrorBoundary>
-                      <Donate />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/hire-tutor" element={
-                    <LazyErrorBoundary>
-                      <HireTutor />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/lectures/:slug" element={
-                    <LazyErrorBoundary>
-                      <LectureDetail />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/admin/*" element={
-                    <LazyErrorBoundary>
-                      <AdminRouter />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/privacy" element={
-                    <LazyErrorBoundary>
-                      <Privacy />
-                    </LazyErrorBoundary>
-                  } />
-                  <Route path="/terms" element={
-                    <LazyErrorBoundary>
-                      <Terms />
-                    </LazyErrorBoundary>
-                  } />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={
-                    <LazyErrorBoundary>
-                      <NotFound />
-                    </LazyErrorBoundary>
-                  } />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  </ErrorBoundary>
-=======
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          {/* Suspense boundary for lazy-loaded routes */}
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/membership" element={<Membership />} />
-              <Route path="/resources/:type" element={<Resources />} />
-              <Route path="/topics" element={<Topics />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/donate" element={<Donate />} />
-              <Route path="/hire-tutor" element={<HireTutor />} />
-              <Route path="/lectures/:slug" element={<LectureDetail />} />
-              <Route path="/admin/*" element={<AdminRouter />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
->>>>>>> de0600aec90edededb855860868bb2447c721070
-);
+const App = () => {
+  // Show setup required screen if Supabase is not configured
+  if (!isSupabaseConfigured) {
+    return (
+      <ErrorBoundary>
+        <HelmetProvider>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <SetupRequired />
+            </TooltipProvider>
+          </QueryClientProvider>
+        </HelmetProvider>
+      </ErrorBoundary>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                {/* Suspense boundary for lazy-loaded routes */}
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/membership" element={
+                      <LazyErrorBoundary>
+                        <Membership />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/resources/:type" element={
+                      <LazyErrorBoundary>
+                        <Resources />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/topics" element={
+                      <LazyErrorBoundary>
+                        <Topics />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/contact" element={
+                      <LazyErrorBoundary>
+                        <Contact />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/donate" element={
+                      <LazyErrorBoundary>
+                        <Donate />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/hire-tutor" element={
+                      <LazyErrorBoundary>
+                        <HireTutor />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/lectures/:slug" element={
+                      <LazyErrorBoundary>
+                        <LectureDetail />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/admin/*" element={
+                      <LazyErrorBoundary>
+                        <AdminRouter />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/privacy" element={
+                      <LazyErrorBoundary>
+                        <Privacy />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/terms" element={
+                      <LazyErrorBoundary>
+                        <Terms />
+                      </LazyErrorBoundary>
+                    } />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={
+                      <LazyErrorBoundary>
+                        <NotFound />
+                      </LazyErrorBoundary>
+                    } />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </AuthProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default App;
