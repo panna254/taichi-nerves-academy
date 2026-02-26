@@ -10,6 +10,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Lazy-load less frequently visited pages to reduce initial bundle size
 const Membership = lazy(() => import("./pages/Membership"));
@@ -24,26 +25,6 @@ const LectureDetail = lazy(() => import("./pages/LectureDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 // Admin pages are heavy - lazy load entire admin router
 const AdminRouter = lazy(() => import("./pages/admin/AdminRouter"));
-
-// Create a simple ForgotPassword page for now
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword").catch(() => {
-  // Fallback component if the file doesn't exist
-  return {
-    default: () => (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Forgot Password</h1>
-          <p className="text-muted-foreground mb-4">
-            This feature is coming soon. Please contact support for password reset.
-          </p>
-          <a href="/login" className="text-primary hover:underline">
-            Back to Login
-          </a>
-        </div>
-      </div>
-    )
-  };
-}));
 
 // Memoize QueryClient to prevent recreation on every render
 const queryClient = new QueryClient({
@@ -102,11 +83,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/forgot-password" element={
-                    <LazyErrorBoundary>
-                      <ForgotPassword />
-                    </LazyErrorBoundary>
-                  } />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/membership" element={
                     <LazyErrorBoundary>
                       <Membership />
