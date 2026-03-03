@@ -51,11 +51,19 @@ export class SupabaseTester {
           email: testEmail,
           password: 'testpassword123'
         });
-        this.addResult(
-          'User Signup',
-          true,
-          `Successfully created user: ${signupResult.user.email}`
-        );
+        if (signupResult.status === "authenticated") {
+          this.addResult(
+            'User Signup',
+            true,
+            `Successfully created user: ${signupResult.session.user.email}`
+          );
+        } else {
+          this.addResult(
+            'User Signup',
+            true,
+            'Signup successful (email confirmation required)'
+          );
+        }
       } catch (error: any) {
         // Email confirmation might be enabled, which is expected
         if (error.message.includes('check your email')) {

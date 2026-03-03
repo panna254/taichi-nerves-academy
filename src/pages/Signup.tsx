@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { userApi } from "@/services/userApi";
@@ -10,6 +10,7 @@ import { BookOpen, Mail, Lock, Eye, EyeOff, User, CreditCard, Check, ArrowLeft, 
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login, isAuthenticated } = useAuth();
   
   // Redirect if already authenticated
@@ -25,6 +26,7 @@ const Signup = () => {
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // PERFORMANCE: Memoize logo error handler
@@ -35,17 +37,25 @@ const Signup = () => {
   }, []);
 
   const membershipBenefits = [
-    "Unlimited access to all video lectures",
-    "Downloadable study notes and guides",
-    "Full podcast library access",
-    "Interactive quizzes with instant feedback",
-    "New content added regularly",
-    "Mobile and desktop access",
+    "Taichi Nerves video content every week",
+    "Premium Notes for Each Lecture",
+    "Quizzes for each Lecture",
+    "New Podcast episodes every week",
   ];
+
+  const planCatalog: Record<string, { name: string; price: number; duration: string }> = {
+    "12m": { name: "1 Year", price: 149, duration: "12 months" },
+    "6m": { name: "6 Months", price: 87, duration: "6 months" },
+    "3m": { name: "3 Months", price: 40, duration: "3 months" },
+  };
+
+  const selectedPlanParam = searchParams.get("plan") || "12m";
+  const selectedPlan = planCatalog[selectedPlanParam] || planCatalog["12m"];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccessMessage(null);
 
     // Basic validation
     if (!formData.name.trim()) {
@@ -71,9 +81,14 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      const session = await userApi.signup(formData);
-      login(session);
-      navigate("/");
+      const result = await userApi.signup(formData);
+      if (result.status === "authenticated") {
+        login(result.session);
+        navigate("/");
+        return;
+      }
+
+      setSuccessMessage(result.message);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create account. Please try again.");
     } finally {
@@ -217,15 +232,20 @@ const Signup = () => {
                   {error}
                 </div>
               )}
+              {successMessage && (
+                <div className="rounded-xl bg-primary/10 border border-primary/30 px-3 py-2 text-sm text-foreground">
+                  {successMessage}
+                </div>
+              )}
 
               {/* Pricing Info */}
               <div className="rounded-xl bg-muted p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-foreground">Monthly Membership</p>
-                    <p className="text-sm text-muted-foreground">Full access to all resources</p>
+                    <p className="font-semibold text-foreground">{selectedPlan.name} Subscription</p>
+                    <p className="text-sm text-muted-foreground">Full access for {selectedPlan.duration}</p>
                   </div>
-                  <p className="font-semibold text-primary">Pricing shared at checkout</p>
+                  <p className="font-semibold text-primary">${selectedPlan.price}</p>
                 </div>
               </div>
 

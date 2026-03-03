@@ -15,6 +15,17 @@ export interface AuthSession {
   user: User;
 }
 
+export type SignupResult =
+  | {
+      status: "authenticated";
+      session: AuthSession;
+    }
+  | {
+      status: "email_confirmation_required";
+      email: string;
+      message: string;
+    };
+
 export interface SignupData {
   name: string;
   email: string;

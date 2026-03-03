@@ -10,8 +10,16 @@ interface RequireAuthProps {
  * Redirects to login page if user is not authenticated
  */
 export const RequireAuth = ({ children }: RequireAuthProps) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-muted-foreground">Checking authentication...</p>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     // Redirect to login page, saving the attempted location

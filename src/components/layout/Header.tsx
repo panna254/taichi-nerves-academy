@@ -111,7 +111,7 @@ const Header = () => {
             </Button>
           </Link>
           <Link to="/signup">
-            <Button variant="default" size="sm">
+            <Button variant="cta" size="sm">
               Sign Up
             </Button>
           </Link>
@@ -181,7 +181,7 @@ const Header = () => {
                 </Button>
               </Link>
               <Link to="/signup" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="default" className="w-full">
+                <Button variant="cta" className="w-full">
                   Sign Up
                 </Button>
               </Link>

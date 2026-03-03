@@ -11,6 +11,7 @@ type AuthContextValue = {
   login: (session: AuthSession) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setSession = (session: Session | null) => {
     if (!session?.user) {
@@ -29,25 +31,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(session.access_token);
   };
 
-  // Restore session from Supabase on mount and subscribe to auth changes
+  // Restore session from Supabase on mount and subscribe to auth changes.
   useEffect(() => {
     if (!isSupabaseConfigured) {
-      console.warn("⚠️ Supabase not configured. Authentication features will be limited.");
+      console.warn("Supabase not configured. Authentication features will be limited.");
+      setIsLoading(false);
       return;
     }
 
     let mounted = true;
-    
+
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (mounted) {
           setSession(session);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Failed to initialize authentication:", error);
         if (mounted) {
           setSession(null);
+          setIsLoading(false);
         }
       }
     };
@@ -59,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (mounted) {
         setSession(session);
+        setIsLoading(false);
       }
     });
 
@@ -71,16 +79,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (session: AuthSession) => {
     setUser(session.user);
     setToken(session.token);
+    setIsLoading(false);
   };
 
   const logout = async () => {
     if (!isSupabaseConfigured) {
-      console.warn("⚠️ Supabase not configured. Cannot logout.");
+      console.warn("Supabase not configured. Cannot logout.");
       setUser(null);
       setToken(null);
+      setIsLoading(false);
       return;
     }
-    
+
     try {
       await supabase.auth.signOut();
     } catch (error) {
@@ -88,14 +98,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setUser(null);
       setToken(null);
+      setIsLoading(false);
     }
   };
 
   const isAuthenticated = !!user && !!token;
 
   const value = useMemo(
-    () => ({ user, token, login, logout, isAuthenticated }),
-    [user, token, isAuthenticated]
+    () => ({ user, token, login, logout, isAuthenticated, isLoading }),
+    [user, token, isAuthenticated, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -112,6 +123,7 @@ export const useAuth = () => {
       login: () => console.warn("Auth not available"),
       logout: () => console.warn("Auth not available"),
       isAuthenticated: false,
+      isLoading: false,
     };
   }
   return ctx;

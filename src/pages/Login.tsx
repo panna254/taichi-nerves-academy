@@ -14,7 +14,7 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   
   // Redirect if already authenticated
-  const from = (location.state as { from?: Location })?.from?.pathname || "/";
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +53,10 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const session = await userApi.login({ email, password });
+      const session = await userApi.login({
+        email: email.trim().toLowerCase(),
+        password,
+      });
       login(session);
       // Redirect to the page user was trying to access, or home
       navigate(from, { replace: true });

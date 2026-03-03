@@ -6,38 +6,58 @@ import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Video, FileText, Headphones, HelpCircle, ArrowRight } from "lucide-react";
 
 const Membership = () => {
-  const features = [
+  const subscriptionPlans = [
     {
-      icon: Video,
-      title: "500+ Video Lectures",
-      description: "Comprehensive video content covering all major health science topics",
+      id: "12m",
+      name: "1 Year",
+      price: 149,
+      billing: "Billed once yearly",
+      popular: true,
     },
     {
-      icon: FileText,
-      title: "200+ Study Notes",
-      description: "Downloadable notes and guides for offline studying",
+      id: "6m",
+      name: "6 Months",
+      price: 87,
+      billing: "Billed every 6 months",
+      popular: false,
     },
     {
-      icon: Headphones,
-      title: "100+ Podcast Episodes",
-      description: "Learn on the go with expert discussions and reviews",
-    },
-    {
-      icon: HelpCircle,
-      title: "1000+ Quiz Questions",
-      description: "Interactive quizzes to test and reinforce your knowledge",
+      id: "3m",
+      name: "3 Months",
+      price: 40,
+      billing: "Billed every 3 months",
+      popular: false,
     },
   ];
 
-  const benefits = [
-    "Unlimited access to all content",
-    "New content added weekly",
-    "Mobile and desktop access",
-    "Downloadable resources",
-    "Progress tracking",
-    "Priority support",
-    "Cancel anytime",
-    "Exclusive member community",
+  const features = [
+    {
+      icon: Video,
+      title: "Taichi Nerves Video Content Every Week",
+      description: "Weekly premium video lessons designed to keep your learning consistent",
+    },
+    {
+      icon: FileText,
+      title: "Premium Notes for Each Lecture",
+      description: "High-quality notes to reinforce every topic and improve retention",
+    },
+    {
+      icon: Headphones,
+      title: "New Podcast Episodes Every Week",
+      description: "Stay updated with weekly podcast sessions and expert insights",
+    },
+    {
+      icon: HelpCircle,
+      title: "Quizzes for Each Lecture",
+      description: "Practice each lesson with focused quizzes and instant feedback",
+    },
+  ];
+
+  const includedItems = [
+    "Taichi Nerves video content every week",
+    "Premium Notes for Each Lecture",
+    "Quizzes for each Lecture",
+    "New Podcast episodes every week",
   ];
 
   return (
@@ -63,44 +83,62 @@ const Membership = () => {
                   <span className="block">Learning Potential</span>
                 </h1>
                 <p className="mt-6 text-lg text-primary-foreground/80">
-                  Get unlimited access to all our premium health science resources with a simple monthly subscription.
+                  Choose a subscription plan that fits your study timeline and get full premium access.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Pricing Card */}
+          {/* Pricing */}
           <section className="py-16 lg:py-24 bg-gradient-subtle">
             <div className="container mx-auto px-4 lg:px-8">
-              <div className="mx-auto max-w-xl">
-                <div className="rounded-3xl bg-card p-8 shadow-elevated border-2 border-primary/20">
-                  <div className="text-center">
-                    <h2 className="font-display text-2xl font-bold text-card-foreground">
-                      Monthly Subscription
-                    </h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                      Simple monthly membership with full access to all resources
-                    </p>
-                  </div>
+              <div className="mx-auto max-w-3xl text-center mb-10">
+                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+                  Subscription Plans
+                </h2>
+                <p className="mt-4 text-lg text-muted-foreground">
+                  Pick your preferred duration and subscribe instantly.
+                </p>
+              </div>
 
-                  <div className="mt-8 grid gap-3">
-                    {benefits.map((benefit) => (
-                      <div key={benefit} className="flex items-center gap-3">
-                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                          <Check className="h-4 w-4 text-primary" />
+              <div className="grid gap-6 md:grid-cols-3">
+                {subscriptionPlans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`rounded-3xl bg-card p-8 shadow-soft border-2 ${
+                      plan.popular ? "border-primary/40 shadow-elevated" : "border-border"
+                    }`}
+                  >
+                    <div className="text-center">
+                      {plan.popular && (
+                        <div className="mb-4 inline-flex rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
+                          Best Value
                         </div>
-                        <span className="text-card-foreground">{benefit}</span>
-                      </div>
-                    ))}
-                  </div>
+                      )}
+                      <h3 className="font-display text-2xl font-bold text-card-foreground">{plan.name}</h3>
+                      <p className="mt-2 text-4xl font-bold text-primary">${plan.price}</p>
+                      <p className="mt-2 text-sm text-muted-foreground">{plan.billing}</p>
+                    </div>
 
-                  <Link to="/signup" className="mt-8 block">
-                    <Button size="xl" className="w-full gap-2">
-                      Get Started
-                      <ArrowRight className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                </div>
+                    <div className="mt-8 grid gap-3">
+                      {includedItems.map((item) => (
+                        <div key={item} className="flex items-center gap-3">
+                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                            <Check className="h-4 w-4 text-primary" />
+                          </div>
+                          <span className="text-card-foreground text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <Link to={`/signup?plan=${plan.id}`} className="mt-8 block">
+                      <Button variant="cta" size="xl" className="w-full gap-2">
+                        Subscribe
+                        <ArrowRight className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -145,7 +183,7 @@ const Membership = () => {
                 Join our community of health science learners today
               </p>
               <Link to="/signup" className="mt-6 inline-block">
-                <Button size="lg" className="gap-2">
+                <Button variant="cta" size="lg" className="gap-2">
                   Subscribe Now
                   <ArrowRight className="h-5 w-5" />
                 </Button>

@@ -3,9 +3,11 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Users, Clock, CheckCircle, ArrowRight, Star } from "lucide-react";
+import { GraduationCap, CheckCircle, ArrowRight } from "lucide-react";
 
 const HireTutor = () => {
+  const instructorImagePath = "/placeholder.jpg"; // Place file at: <project-root>/public/placeholder.jpg
+
   const benefits = [
     "Institution-wide support for cohorts and departments",
     "Curriculum-aligned tutoring that matches your courses",
@@ -13,27 +15,6 @@ const HireTutor = () => {
     "Learning analytics and progress reporting for administrators",
     "Multi-time-zone availability for distributed teams",
     "Onboarding and kickoff in as little as two weeks",
-  ];
-
-  const tutors = [
-    {
-      name: "Dr. Sarah Johnson",
-      specialty: "Curriculum Design & Anatomy Labs",
-      rating: 4.9,
-      sessions: 60,
-    },
-    {
-      name: "Prof. Michael Okonkwo",
-      specialty: "Clinical Pharmacology & Case-Based Learning",
-      rating: 4.8,
-      sessions: 55,
-    },
-    {
-      name: "Dr. Emily Chen",
-      specialty: "Molecular Biology & Assessment",
-      rating: 4.9,
-      sessions: 45,
-    },
   ];
 
   return (
@@ -87,35 +68,34 @@ const HireTutor = () => {
                   </ul>
 
                   <Link to="/contact" className="mt-8 inline-block">
-                    <Button size="lg" className="gap-2">
+                    <Button variant="cta" size="lg" className="gap-2">
                       Request an Institutional Plan
                       <ArrowRight className="h-5 w-5" />
                     </Button>
                   </Link>
                 </div>
 
-                {/* Tutors Preview */}
-                <div className="space-y-4">
-                  {tutors.map((tutor) => (
-                    <div key={tutor.name} className="rounded-xl bg-card p-5 shadow-soft">
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                          <GraduationCap className="h-7 w-7 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-card-foreground">{tutor.name}</h3>
-                          <p className="text-sm text-muted-foreground">{tutor.specialty}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className="flex items-center gap-1 text-accent">
-                            <Star className="h-4 w-4 fill-current" />
-                            <span className="font-semibold">{tutor.rating}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{tutor.sessions}+ cohorts supported</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                {/* Team */}
+                <div className="rounded-xl bg-card p-6 shadow-soft">
+                  <h3 className="font-display text-xl font-bold text-card-foreground">Team</h3>
+                  <div className="mt-4 overflow-hidden rounded-xl border border-border">
+                    <img
+                      src={instructorImagePath}
+                      alt="Instructor placeholder"
+                      className="h-96 w-full object-cover object-top md:h-[32rem]"
+                    />
+                  </div>
+                  <div className="mt-5 space-y-3">
+                    <p className="text-card-foreground">
+                      <span className="font-semibold">Name:</span> Alex Maina
+                    </p>
+                    <p className="text-card-foreground">
+                      <span className="font-semibold">Who am I:</span> President and lead instructor at Taichi Nerves Academy.
+                    </p>
+                    <Link to="/team" className="inline-flex items-center text-primary font-semibold hover:underline">
+                      Read more
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -170,7 +150,7 @@ const HireTutor = () => {
                 Let us build a tutoring plan aligned to your institution's goals.
               </p>
               <Link to="/contact" className="mt-6 inline-block">
-                <Button className="gap-2">
+                <Button variant="cta" className="gap-2">
                   Book an Institutional Consult
                   <ArrowRight className="h-5 w-5" />
                 </Button>
