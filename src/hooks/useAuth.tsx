@@ -5,31 +5,31 @@ import { supabase } from "@/lib/supabase";
 import { mapSupabaseUserToUser } from "@/services/userApi";
 import { isSupabaseConfigured } from "@/config/supabase";
 
-type AuthContextValue = {
+type MembershipStatus = 'free' | 'premium' | 'expired' | 'inactive' | null;
+
+interface AuthContextValue {
   user: User | null;
   token: string | null;
-  login: (session: AuthSession) => void;
-  logout: () => void;
+  membershipStatus: MembershipStatus;
+  isLoading: boolean;
+  isInitializing: boolean;
+  isLoggingOut: boolean;
   isAuthenticated: boolean;
-};
+  login: (session: AuthSession) => Promise<void>;
+  logout: () => Promise<void>;
+  refreshMembership: () => Promise<void>;
+}
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [membershipStatus, setMembershipStatus] = useState<MembershipStatus>(null);
 
-  const setSession = (session: Session | null) => {
-    if (!session?.user) {
-      setUser(null);
-      setToken(null);
-      return;
-    }
-    setUser(mapSupabaseUserToUser(session.user));
-    setToken(session.access_token);
-  };
-
-  // Restore session from Supabase on mount and subscribe to auth changes
   useEffect(() => {
     if (!isSupabaseConfigured) {
       console.warn("⚠️ Supabase not configured. Authentication features will be limited.");
@@ -41,36 +41,105 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (mounted) {
-          setSession(session);
+        
+        if (mounted && session?.user && session?.access_token) {
+          const mappedUser = mapSupabaseUserToUser(session.user);
+          setUser(mappedUser);
+          setToken(session.access_token);
+          
+          await fetchMembershipStatus(session.user.id);
+        } else if (mounted) {
+          setUser(null);
+          setToken(null);
+          setMembershipStatus(null);
         }
       } catch (error) {
         console.error("Failed to initialize authentication:", error);
         if (mounted) {
-          setSession(null);
+          setUser(null);
+          setToken(null);
+          setMembershipStatus(null);
         }
+      } finally {
+        setIsInitializing(false);
       }
     };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!mounted) return;
+        
+        console.log(`Auth state changed: ${event}`, session ? `User: ${session.user.email}` : 'No session');
+        
+        if (event === 'SIGNED_IN' && session?.user && session?.access_token) {
+          const mappedUser = mapSupabaseUserToUser(session.user);
+          setUser(mappedUser);
+          setToken(session.access_token);
+          await fetchMembershipStatus(session.user.id);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setToken(null);
+          setMembershipStatus(null);
+        } else if (event === 'TOKEN_REFRESHED' && session?.user && session?.access_token) {
+          setToken(session.access_token);
+        }
+      }
+    );
 
     initializeAuth();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) {
-        setSession(session);
-      }
-    });
-
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
-  const login = (session: AuthSession) => {
-    setUser(session.user);
-    setToken(session.token);
+  const fetchMembershipStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('membership_status, membership_expires_at')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.warn('Failed to fetch membership status:', error);
+        setMembershipStatus('free'); 
+        return;
+      }
+
+      if (data) {
+        const now = new Date();
+        const expiresAt = data.membership_expires_at ? new Date(data.membership_expires_at) : null;
+        
+        if (expiresAt && expiresAt < now) {
+          setMembershipStatus('expired');
+        } else if (data.membership_status) {
+          setMembershipStatus(data.membership_status);
+        } else {
+          setMembershipStatus('free');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching membership status:', error);
+      setMembershipStatus('free');
+    }
+  };
+
+  const login = async (session: AuthSession) => {
+    setIsLoading(true);
+    try {
+      setUser(session.user);
+      setToken(session.token);
+      await fetchMembershipStatus(session.user.id);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -78,9 +147,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.warn("⚠️ Supabase not configured. Cannot logout.");
       setUser(null);
       setToken(null);
+      setMembershipStatus(null);
       return;
     }
     
+    setIsLoggingOut(true);
     try {
       await supabase.auth.signOut();
     } catch (error) {
@@ -88,15 +159,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setUser(null);
       setToken(null);
+      setMembershipStatus(null);
+      setIsLoggingOut(false);
     }
   };
 
-  const isAuthenticated = !!user && !!token;
+  const refreshMembership = async () => {
+    const currentUser = user;
+    if (currentUser) {
+      await fetchMembershipStatus(currentUser.id);
+    }
+  };
 
-  const value = useMemo(
-    () => ({ user, token, login, logout, isAuthenticated }),
-    [user, token, isAuthenticated]
-  );
+  const value = useMemo(() => ({ 
+    user, 
+    token, 
+    membershipStatus,
+    isLoading, 
+    isInitializing,
+    isLoggingOut,
+    isAuthenticated: !!user,
+    login, 
+    logout,
+    refreshMembership 
+  }), [user, token, membershipStatus, isLoading, isInitializing, isLoggingOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
@@ -109,9 +195,14 @@ export const useAuth = () => {
     return {
       user: null,
       token: null,
+      membershipStatus: null,
+      isLoading: false,
+      isInitializing: false,
+      isLoggingOut: false,
       login: () => console.warn("Auth not available"),
       logout: () => console.warn("Auth not available"),
       isAuthenticated: false,
+      refreshMembership: () => console.warn("Auth not available"),
     };
   }
   return ctx;

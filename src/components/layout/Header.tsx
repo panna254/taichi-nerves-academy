@@ -1,17 +1,20 @@
 import { useState, useCallback, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, BookOpen, Video, FileText, Headphones, HelpCircle } from "lucide-react";
+import { Menu, X, ChevronDown, BookOpen, Video, FileText, Headphones, HelpCircle, User, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout, isLoading, isLoggingOut } = useAuth();
 
   // PERFORMANCE: Memoize logo error handler to prevent recreation on every render
   const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -105,16 +108,55 @@ const Header = () => {
 
         {/* Auth Buttons */}
         <div className="hidden items-center gap-3 lg:flex">
-          <Link to="/login">
-            <Button variant="ghost" size="sm">
-              Login
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button variant="default" size="sm">
-              Sign Up
-            </Button>
-          </Link>
+          {isLoggingOut ? (
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          ) : isLoading ? (
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          ) : isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="h-4 w-4" />
+                  {user?.name || 'User'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/membership" className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Membership
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={logout}
+                  className="flex items-center gap-2 text-red-600"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button variant="default" size="sm">
+                  Sign Up
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -175,16 +217,42 @@ const Header = () => {
             </Link>
 
             <div className="flex gap-2 pt-4">
-              <Link to="/login" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="default" className="w-full">
-                  Sign Up
-                </Button>
-              </Link>
+              {isLoggingOut ? (
+                <div className="flex-1 flex justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              ) : isLoading ? (
+                <div className="flex-1 flex justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              ) : isAuthenticated ? (
+                <div className="flex-1">
+                  <div className="text-center mb-2">
+                    <p className="text-sm font-medium">{user?.name || 'User'}</p>
+                    <p className="text-xs text-muted-foreground">Logged in</p>
+                  </div>
+                  <Button 
+                    onClick={() => { logout(); setMobileMenuOpen(false); }}
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/login" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/signup" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="default" className="w-full">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
