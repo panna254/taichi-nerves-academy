@@ -108,18 +108,6 @@ const Header = () => {
 
         {/* Auth Buttons */}
         <div className="hidden items-center gap-3 lg:flex">
-<<<<<<< HEAD
-          <Link to="/login">
-            <Button variant="ghost" size="sm">
-              Login
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button variant="cta" size="sm">
-              Sign Up
-            </Button>
-          </Link>
-=======
           {isLoggingOut ? (
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           ) : isLoading ? (
@@ -169,7 +157,6 @@ const Header = () => {
               </Link>
             </>
           )}
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
         </div>
 
         {/* Mobile Menu Button */}
@@ -230,18 +217,6 @@ const Header = () => {
             </Link>
 
             <div className="flex gap-2 pt-4">
-<<<<<<< HEAD
-              <Link to="/login" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="cta" className="w-full">
-                  Sign Up
-                </Button>
-              </Link>
-=======
               {isLoggingOut ? (
                 <div className="flex-1 flex justify-center">
                   <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -278,7 +253,6 @@ const Header = () => {
                   </Link>
                 </>
               )}
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
             </div>
           </div>
         </div>

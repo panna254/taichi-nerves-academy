@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { userApi } from "@/services/userApi";
@@ -11,10 +11,15 @@ import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-re
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { login, isAuthenticated } = useAuth();
   
+  // Get redirect URL from search params or location state
+  const redirectUrl = searchParams.get('redirect') || 
+    (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || 
+    "/";
+  
   // Redirect if already authenticated
-  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,9 +29,9 @@ const Login = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(from, { replace: true });
+      navigate(redirectUrl, { replace: true });
     }
-  }, [isAuthenticated, navigate, from]);
+  }, [isAuthenticated, navigate, redirectUrl]);
 
   // PERFORMANCE: Memoize logo error handler
   const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -58,8 +63,8 @@ const Login = () => {
         password,
       });
       login(session);
-      // Redirect to the page user was trying to access, or home
-      navigate(from, { replace: true });
+      // Redirect to the intended destination
+      navigate(redirectUrl, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to sign in. Please try again.");
     } finally {

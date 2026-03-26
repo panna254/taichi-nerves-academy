@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import AuthAwareCTA from "@/components/common/AuthAwareCTA";
 import { Play, BookOpen, Users, Award } from "lucide-react";
 
 const HeroSection = () => {
@@ -45,12 +46,14 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row animate-slide-up animation-delay-200">
-            <Link to="/signup">
-              <Button variant="hero" size="xl" className="gap-2">
-                <Play className="h-5 w-5" />
-                Start Learning Today
-              </Button>
-            </Link>
+            <AuthAwareCTA 
+              variant="hero" 
+              size="xl"
+              icon={<Play className="h-5 w-5" />}
+              redirectTo="/membership"
+            >
+              Start Learning Today
+            </AuthAwareCTA>
             <Link to="/resources/lectures">
               <Button variant="heroOutline" size="xl">
                 Browse Resources

@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import AuthAwareCTA from "@/components/common/AuthAwareCTA";
 import { Check, Sparkles, Video, FileText, Headphones, HelpCircle, ArrowRight } from "lucide-react";
 
 const Membership = () => {
+  const navigate = useNavigate();
+  
   const subscriptionPlans = [
     {
       id: "12m",
@@ -13,6 +16,7 @@ const Membership = () => {
       price: 149,
       billing: "Billed once yearly",
       popular: true,
+      duration: "12 months"
     },
     {
       id: "6m",
@@ -20,6 +24,7 @@ const Membership = () => {
       price: 87,
       billing: "Billed every 6 months",
       popular: false,
+      duration: "6 months"
     },
     {
       id: "3m",
@@ -27,8 +32,21 @@ const Membership = () => {
       price: 40,
       billing: "Billed every 3 months",
       popular: false,
+      duration: "3 months"
     },
   ];
+
+  const handleSubscribe = (plan: typeof subscriptionPlans[0]) => {
+    navigate('/checkout', { 
+      state: { 
+        id: plan.id,
+        name: plan.name,
+        price: plan.price,
+        duration: plan.duration,
+        billing: plan.billing
+      } 
+    });
+  };
 
   const features = [
     {
@@ -131,12 +149,15 @@ const Membership = () => {
                       ))}
                     </div>
 
-                    <Link to={`/signup?plan=${plan.id}`} className="mt-8 block">
-                      <Button variant="cta" size="xl" className="w-full gap-2">
-                        Subscribe
-                        <ArrowRight className="h-5 w-5" />
-                      </Button>
-                    </Link>
+                    <Button 
+                      variant="cta" 
+                      size="xl" 
+                      className="w-full gap-2"
+                      onClick={() => handleSubscribe(plan)}
+                    >
+                      Subscribe
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -182,12 +203,15 @@ const Membership = () => {
               <p className="mt-4 text-muted-foreground">
                 Join our community of health science learners today
               </p>
-              <Link to="/signup" className="mt-6 inline-block">
-                <Button variant="cta" size="lg" className="gap-2">
-                  Subscribe Now
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button 
+                variant="cta" 
+                size="lg"
+                onClick={() => handleSubscribe(subscriptionPlans[0])} // Default to 1 year plan
+                className="gap-2"
+              >
+                Subscribe Now
+                <ArrowRight className="h-5 w-5" />
+              </Button>
             </div>
           </section>
         </main>

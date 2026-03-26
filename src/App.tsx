@@ -19,6 +19,7 @@ import "./utils/debugApp";
 
 // Lazy-load less frequently visited pages to reduce initial bundle size
 const Membership = lazy(() => import("./pages/Membership"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const Resources = lazy(() => import("./pages/Resources"));
 const Topics = lazy(() => import("./pages/Topics"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -28,6 +29,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const LectureDetail = lazy(() => import("./pages/LectureDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Profile = lazy(() => import("./pages/Profile"));
 // Admin pages are heavy - lazy load entire admin router
 const AdminRouter = lazy(() => import("./pages/admin/AdminRouter"));
 
@@ -112,6 +114,11 @@ const App = () => {
                         <Membership />
                       </LazyErrorBoundary>
                     } />
+                    <Route path="/checkout" element={
+                      <LazyErrorBoundary>
+                        <Checkout />
+                      </LazyErrorBoundary>
+                    } />
                     <Route path="/resources/:type" element={
                       <LazyErrorBoundary>
                         <Resources />
@@ -155,6 +162,11 @@ const App = () => {
                     <Route path="/terms" element={
                       <LazyErrorBoundary>
                         <Terms />
+                      </LazyErrorBoundary>
+                    } />
+                    <Route path="/profile" element={
+                      <LazyErrorBoundary>
+                        <Profile />
                       </LazyErrorBoundary>
                     } />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

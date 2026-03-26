@@ -15,46 +15,26 @@ interface AuthContextValue {
   isInitializing: boolean;
   isLoggingOut: boolean;
   isAuthenticated: boolean;
-<<<<<<< HEAD
-  isLoading: boolean;
-};
-=======
   login: (session: AuthSession) => Promise<void>;
   logout: () => Promise<void>;
   refreshMembership: () => Promise<void>;
 }
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-<<<<<<< HEAD
   const [isLoading, setIsLoading] = useState(true);
-
-  const setSession = (session: Session | null) => {
-    if (!session?.user) {
-      setUser(null);
-      setToken(null);
-      return;
-    }
-    setUser(mapSupabaseUserToUser(session.user));
-    setToken(session.access_token);
-  };
-
-  // Restore session from Supabase on mount and subscribe to auth changes.
-=======
-  const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [membershipStatus, setMembershipStatus] = useState<MembershipStatus>(null);
 
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
   useEffect(() => {
     if (!isSupabaseConfigured) {
       console.warn("Supabase not configured. Authentication features will be limited.");
       setIsLoading(false);
+      setIsInitializing(false);
       return;
     }
 
@@ -62,14 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const initializeAuth = async () => {
       try {
-<<<<<<< HEAD
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (mounted) {
-          setSession(session);
-          setIsLoading(false);
-=======
         const { data: { session } } = await supabase.auth.getSession();
         
         if (mounted && session?.user && session?.access_token) {
@@ -77,27 +49,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(mappedUser);
           setToken(session.access_token);
           
-          await fetchMembershipStatus(session.user.id);
+          // Fetch membership status asynchronously without blocking
+          fetchMembershipStatus(session.user.id).catch(error => {
+            console.warn('Failed to fetch membership status during init:', error);
+          });
         } else if (mounted) {
           setUser(null);
           setToken(null);
           setMembershipStatus(null);
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
         }
       } catch (error) {
         console.error("Failed to initialize authentication:", error);
         if (mounted) {
-<<<<<<< HEAD
-          setSession(null);
-          setIsLoading(false);
-=======
           setUser(null);
           setToken(null);
           setMembershipStatus(null);
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
         }
       } finally {
-        setIsInitializing(false);
+        // Always set both loading states to false after initialization
+        if (mounted) {
+          setIsLoading(false);
+          setIsInitializing(false);
+        }
       }
     };
 
@@ -111,7 +84,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const mappedUser = mapSupabaseUserToUser(session.user);
           setUser(mappedUser);
           setToken(session.access_token);
-          await fetchMembershipStatus(session.user.id);
+          
+          // Fetch membership status asynchronously without blocking
+          fetchMembershipStatus(session.user.id).catch(error => {
+            console.warn('Failed to fetch membership status on sign in:', error);
+          });
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setToken(null);
@@ -124,18 +101,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     initializeAuth();
 
-<<<<<<< HEAD
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) {
-        setSession(session);
-        setIsLoading(false);
-      }
-    });
-
-=======
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
     return () => {
       mounted = false;
       if (subscription) {
@@ -144,13 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-<<<<<<< HEAD
-  const login = (session: AuthSession) => {
-    setUser(session.user);
-    setToken(session.token);
-    setIsLoading(false);
-=======
-  const fetchMembershipStatus = async (userId: string) => {
+const fetchMembershipStatus = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -183,50 +142,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (session: AuthSession) => {
-    setIsLoading(true);
     try {
       setUser(session.user);
       setToken(session.token);
-      await fetchMembershipStatus(session.user.id);
+      
+      // Fetch membership status asynchronously without blocking login
+      fetchMembershipStatus(session.user.id).catch(error => {
+        console.warn('Failed to fetch membership status on login:', error);
+      });
     } catch (error) {
       console.error('Login error:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
   };
 
   const logout = async () => {
     if (!isSupabaseConfigured) {
-      console.warn("Supabase not configured. Cannot logout.");
+      console.warn("⚠️ Supabase not configured. Cannot logout.");
       setUser(null);
       setToken(null);
-<<<<<<< HEAD
-      setIsLoading(false);
-      return;
-    }
-
-=======
       setMembershipStatus(null);
       return;
     }
     
     setIsLoggingOut(true);
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
     try {
       await supabase.auth.signOut();
     } catch (error) {
       console.error("Failed to sign out:", error);
     } finally {
+      // Explicitly clear all state in finally block
       setUser(null);
       setToken(null);
-<<<<<<< HEAD
-      setIsLoading(false);
-=======
       setMembershipStatus(null);
       setIsLoggingOut(false);
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
+      // Ensure isLoading is also false after logout
+      setIsLoading(false);
     }
   };
 
@@ -237,13 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-<<<<<<< HEAD
-  const value = useMemo(
-    () => ({ user, token, login, logout, isAuthenticated, isLoading }),
-    [user, token, isAuthenticated, isLoading]
-  );
-=======
-  const value = useMemo(() => ({ 
+const value = useMemo(() => ({ 
     user, 
     token, 
     membershipStatus,
@@ -255,7 +200,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
     refreshMembership 
   }), [user, token, membershipStatus, isLoading, isInitializing, isLoggingOut]);
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
@@ -275,11 +219,7 @@ export const useAuth = () => {
       login: () => console.warn("Auth not available"),
       logout: () => console.warn("Auth not available"),
       isAuthenticated: false,
-<<<<<<< HEAD
-      isLoading: false,
-=======
       refreshMembership: () => console.warn("Auth not available"),
->>>>>>> 948e0e401bd162f7de6c426c768fdf487f47fa02
     };
   }
   return ctx;

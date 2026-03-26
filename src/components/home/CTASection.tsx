@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import AuthAwareCTA from "@/components/common/AuthAwareCTA";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 const CTASection = () => {
@@ -23,12 +24,14 @@ const CTASection = () => {
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link to="/signup">
-              <Button variant="hero" size="xl" className="gap-2 min-w-[200px]">
-                Get Started Now
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
+            <AuthAwareCTA 
+              variant="hero" 
+              size="xl" 
+              className="min-w-[200px]"
+              redirectTo="/membership"
+            >
+              Get Started Now
+            </AuthAwareCTA>
             <Link to="/contact">
               <Button variant="heroOutline" size="xl" className="min-w-[200px]">
                 Contact Us
