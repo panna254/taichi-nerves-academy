@@ -1,146 +1,100 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { Role } from "@/types/admin";
-import { adminApi } from "@/services/adminApi";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Lock, ShieldCheck, ArrowLeft, Loader2 } from "lucide-react";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAdminAuth } from "@/hooks/useAdminAuth"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Loader2, ArrowLeft } from "lucide-react"
 
 const AdminLogin = () => {
-  const navigate = useNavigate();
-  const { login } = useAdminAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("ADMIN");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const { login } = useAdminAuth()
+  const navigate = useNavigate()
 
-    // Basic validation
-    if (!email.includes("@")) {
-      setError("Please use a valid work email");
-      return;
-    }
-
-    if (!password.trim()) {
-      setError("Password is required");
-      return;
-    }
-
-    setIsLoading(true);
-
+  const handleSubmit = async () => {
+    setLoading(true)
+    setError(null)
+    
     try {
-      const session = await adminApi.login(email, password, role);
-      login(session);
-      navigate("/admin");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to sign in. Please try again.");
+      const result = await login(email, password)
+      if (result.success) {
+        navigate('/admin')
+      } else {
+        setError(result.error || 'Login failed')
+      }
     } finally {
-      setIsLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4">
-      <div className="w-full max-w-lg rounded-3xl border border-primary/30 bg-card/80 backdrop-blur shadow-elevated p-8 space-y-6">
-        {/* Back to Home Link */}
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="max-w-md w-full space-y-8 p-8">
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-            <ShieldCheck className="h-6 w-6 text-primary" />
+        {/* Back to Home */}
+        <Button 
+          variant="ghost" 
+          className="w-fit mb-4" 
+          onClick={() => navigate('/')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Home
+        </Button>
+
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Sign in to manage content</p>
+        </div>
+
+        {/* Error alert */}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Fields */}
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input 
+              id="email" 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+            />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Admin Access</p>
-            <h1 className="text-2xl font-bold text-card-foreground">Sign in to dashboard</h1>
+            <Label htmlFor="password">Password</Label>
+            <Input 
+              id="password" 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-card-foreground" htmlFor="email">
-              Work email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@taichinerves.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-              required
-            />
-          </div>
+        {/* Submit */}
+        <Button className="w-full" disabled={loading} onClick={handleSubmit}>
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Sign In
+        </Button>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-card-foreground" htmlFor="password">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-card-foreground" htmlFor="role">
-              Select role
-            </label>
-            <Select value={role} onValueChange={(val) => setRole(val as Role)} disabled={isLoading}>
-              <SelectTrigger id="role">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ADMIN">Admin</SelectItem>
-                <SelectItem value="EDITOR">Editor</SelectItem>
-                <SelectItem value="REVIEWER">Reviewer</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">Simulated roles for UI access.</p>
-          </div>
-
-          {error && (
-            <div className="rounded-xl bg-destructive/10 border border-destructive/30 px-3 py-2 text-sm text-destructive">
-              {error}
-            </div>
-          )}
-
-          <Button type="submit" className="w-full gap-2" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Signing in...
-              </>
-            ) : (
-              <>
-                <Lock className="h-4 w-4" />
-                Sign in
-              </>
-            )}
-          </Button>
-        </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLogin;
+export default AdminLogin
 
 
 

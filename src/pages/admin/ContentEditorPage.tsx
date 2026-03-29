@@ -1,102 +1,130 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { adminApi } from "@/services/mockAdminApi";
-import { ContentStatus, ContentType, MedicalContent, UploadedFile } from "@/types/admin";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { UploadCloud } from "lucide-react";
+import { useState, useEffect, useRef } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { adminContentService } from "@/services/adminContentService"
+import { adminFileService } from "@/services/adminFileService"
+import { useAdminAuth } from "@/hooks/useAdminAuth"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
+import { UploadCloud } from "lucide-react"
 
 type FormState = {
   title: string;
-  contentType: ContentType;
-  status: ContentStatus;
+  contentType: 'article' | 'video' | 'pdf' | 'quiz';
+  status: 'draft' | 'review' | 'published' | 'archived';
   summary: string;
   references: string;
 };
 
 const ContentEditorPage = () => {
-  const { id } = useParams();
-  const isEdit = Boolean(id);
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { hasPermission } = useAdminAuth()
+  const isEdit = Boolean(id)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [form, setForm] = useState<FormState>({
     title: "",
-    contentType: "Article",
-    status: "Draft",
+    contentType: "article",
+    status: "draft",
     summary: "",
     references: "",
   });
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([])
 
   useEffect(() => {
-    if (isEdit && id) {
-      setLoading(true);
-      adminApi
-        .getContentById(id)
-        .then((content) => {
-          if (!content) return;
-          setForm({
-            title: content.title,
-            contentType: content.contentType,
-            status: content.status,
-            summary: content.summary ?? "",
-            references: content.references.join("\n"),
-          });
-          setFiles(content.files);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [id, isEdit]);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    if (!form.title.trim()) {
-      setError("Title is required");
-      return;
-    }
-    if (!form.summary.trim()) {
-      setError("Summary is required");
-      return;
-    }
-    setSaving(true);
-    const payload: Omit<MedicalContent, "id" | "lastUpdated" | "version"> = {
-      title: form.title,
-      contentType: form.contentType,
-      status: form.status,
-      summary: form.summary,
-      references: form.references
-        .split("\n")
-        .map((r) => r.trim())
-        .filter(Boolean),
-      reviewerNotes: "",
-      files,
-    };
-
-    if (isEdit && id) {
-      await adminApi.updateContent(id, payload);
-    } else {
-      await adminApi.createContent(payload);
-    }
-    setSaving(false);
-    navigate("/admin/content");
-  };
+    if (!isEdit || !id) return
+    setLoading(true)
+    adminContentService.getContentById(id)
+      .then((content) => {
+        if (!content) return
+        setForm({
+          title: content.title,
+          contentType: content.content_type,
+          status: content.status,
+          summary: content.summary ?? "",
+          references: content.references?.join("\n") ?? "",
+        });
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : 'Load failed'))
+      .finally(() => setLoading(false))
+  }, [id, isEdit])
 
   const handleFileUpload = async (file: File) => {
-    setUploadProgress(0);
-    const uploaded = await adminApi.uploadFile(
-      { name: file.name, size: file.size, type: file.type },
-      (percent) => setUploadProgress(percent)
-    );
-    setFiles((prev) => [uploaded, ...prev]);
-  };
+    if (isEdit && id) {
+      try {
+        setSaving(true)
+        await adminFileService.uploadFile(file, id, (progress) => {
+          setUploadProgress(progress)
+        })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Upload failed')
+      } finally {
+        setSaving(false)
+        setUploadProgress(0)
+      }
+    } else {
+      setPendingFiles((prev) => [...prev, file])
+    }
+  }
+
+  const handleSave = async (status: 'draft' | 'review' = 'draft') => {
+    if (!hasPermission('content.edit')) {
+      setError('You do not have permission to edit content')
+      return
+    }
+
+    try {
+      setSaving(true)
+      setError(null)
+
+      const payload = {
+        title: form.title,
+        content_type: form.contentType,
+        content: form.summary, // Using summary as content for now
+        summary: form.summary || undefined,
+        references: form.references
+          ? form.references.split('\n').filter((r: string) => r.trim() !== '')
+          : undefined,
+      }
+
+      let savedContent
+      if (isEdit && id) {
+        savedContent = await adminContentService.updateContent(id, payload)
+      } else {
+        savedContent = await adminContentService.createContent(payload)
+        navigate(`/admin/content/${savedContent.id}`)
+      }
+
+      if (pendingFiles.length > 0 && savedContent?.id) {
+        for (const file of pendingFiles) {
+          await adminFileService.uploadFile(file, savedContent.id)
+        }
+        setPendingFiles([])
+      }
+
+      if (status === 'review') {
+        await adminContentService.submitForReview(savedContent.id)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleSave()
+  }
 
   return (
     <div className="space-y-6">
@@ -129,29 +157,29 @@ const ContentEditorPage = () => {
                 <Label>Content type</Label>
                 <Select
                   value={form.contentType}
-                  onValueChange={(val) => setForm((f) => ({ ...f, contentType: val as ContentType }))}
+                  onValueChange={(val) => setForm((f) => ({ ...f, contentType: val as any }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Article">Article</SelectItem>
-                    <SelectItem value="Video">Video</SelectItem>
-                    <SelectItem value="PDF">PDF</SelectItem>
-                    <SelectItem value="Quiz">Quiz</SelectItem>
+                    <SelectItem value="article">Article</SelectItem>
+                    <SelectItem value="video">Video</SelectItem>
+                    <SelectItem value="pdf">PDF</SelectItem>
+                    <SelectItem value="quiz">Quiz</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label>Status</Label>
-                <Select value={form.status} onValueChange={(val) => setForm((f) => ({ ...f, status: val as ContentStatus }))}>
+                <Select value={form.status} onValueChange={(val) => setForm((f) => ({ ...f, status: val as any }))}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Draft">Draft</SelectItem>
-                    <SelectItem value="Review">Review</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="review">Review</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -188,7 +216,7 @@ const ContentEditorPage = () => {
           )}
 
           <div className="flex gap-3">
-            <Button type="submit" disabled={saving || loading} className="gap-2">
+            <Button type="submit" disabled={saving || loading || !hasPermission('content.edit')} className="gap-2" onClick={() => handleSave()}>
               {saving ? "Saving..." : isEdit ? "Save changes" : "Create"}
             </Button>
             <Button type="button" variant="outline" onClick={() => navigate("/admin/content")}>
@@ -200,15 +228,21 @@ const ContentEditorPage = () => {
         <div className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-4 shadow-soft space-y-3">
             <h3 className="text-sm font-semibold text-card-foreground">Upload files</h3>
-            <label className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/70 bg-muted/50 px-4 py-10 text-center cursor-pointer hover:border-primary">
+            <label className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/70 bg-muted/50 px-4 py-10 text-center cursor-pointer hover:border-primary"
+                  onClick={() => fileInputRef.current?.click()}>
               <UploadCloud className="h-6 w-6 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">Drag & drop or click to upload</p>
               <input
+                ref={fileInputRef}
                 type="file"
                 className="hidden"
+                accept="image/jpeg,image/png,image/gif,video/mp4,video/webm,video/quicktime,application/pdf,text/plain,text/markdown,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFileUpload(file);
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    handleFileUpload(file)
+                    e.target.value = ''
+                  }
                 }}
               />
             </label>

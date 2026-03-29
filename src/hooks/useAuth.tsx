@@ -90,9 +90,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.warn('Failed to fetch membership status on sign in:', error);
           });
         } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-          setToken(null);
-          setMembershipStatus(null);
+          // Only clear state if we're not already in the process of logging out
+          // This prevents interference with manual logout process
+          if (!isLoggingOut) {
+            setUser(null);
+            setToken(null);
+            setMembershipStatus(null);
+            setIsLoading(false);
+          }
         } else if (event === 'TOKEN_REFRESHED' && session?.user && session?.access_token) {
           setToken(session.access_token);
         }
@@ -162,22 +167,31 @@ const fetchMembershipStatus = async (userId: string) => {
       setUser(null);
       setToken(null);
       setMembershipStatus(null);
+      setIsLoggingOut(false);
+      setIsLoading(false);
       return;
     }
     
     setIsLoggingOut(true);
     try {
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error("Failed to sign out:", error);
-    } finally {
-      // Explicitly clear all state in finally block
+      // Clear local state immediately to prevent UI delays
       setUser(null);
       setToken(null);
       setMembershipStatus(null);
-      setIsLoggingOut(false);
-      // Ensure isLoading is also false after logout
       setIsLoading(false);
+      
+      // Then perform the actual Supabase logout
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      // Ensure state is cleared even if Supabase logout fails
+      setUser(null);
+      setToken(null);
+      setMembershipStatus(null);
+      setIsLoading(false);
+    } finally {
+      // Always ensure isLoggingOut is reset
+      setIsLoggingOut(false);
     }
   };
 
