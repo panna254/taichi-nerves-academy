@@ -116,10 +116,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 const fetchMembershipStatus = async (userId: string) => {
     try {
+      // First get the user record to find the actual UUID
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('clerk_user_id', userId)
+        .single();
+
+      if (userError || !userData) {
+        console.warn('User not found:', userError);
+        setMembershipStatus('free'); 
+        return;
+      }
+
+      // Then get the profile using the actual user ID
       const { data, error } = await supabase
         .from('profiles')
         .select('membership_status, membership_expires_at')
-        .eq('id', userId)
+        .eq('id', userData.id)
         .single();
 
       if (error) {

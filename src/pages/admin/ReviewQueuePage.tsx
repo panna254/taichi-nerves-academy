@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react";
-import { adminApi } from "@/services/mockAdminApi";
-import { MedicalContent } from "@/types/admin";
+import { adminService, showToast } from "@/services/adminService";
+import { ContentItem } from "@/services/adminService";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ReviewQueuePage = () => {
-  const [items, setItems] = useState<MedicalContent[]>([]);
+  const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const load = () => {
+  const load = async () => {
     setLoading(true);
-    adminApi.getReviewQueue().then(setItems).finally(() => setLoading(false));
+    setError(null);
+    
+    const result = await adminService.getContents({ status: 'review' });
+    
+    if (result.success && result.data) {
+      setItems(result.data);
+    } else {
+      setError(result.error || "Failed to load review queue");
+      showToast(false, result.error || "Failed to load review queue");
+    }
+    
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -23,17 +35,42 @@ const ReviewQueuePage = () => {
 
   const handleApprove = async (id: string) => {
     setBusyId(id);
-    await adminApi.approveContent(id);
+    
+    const result = await adminService.publishVideoLecture(id);
+    
+    if (result.success) {
+      showToast(true, "Content approved and published successfully");
+      load();
+    } else {
+      showToast(false, result.error || "Failed to approve content");
+    }
+    
     setBusyId(null);
-    load();
   };
 
   const handleRequestChanges = async (id: string) => {
+    if (!note.trim()) {
+      showToast(false, "Please provide reviewer notes");
+      return;
+    }
+
     setBusyId(id);
-    await adminApi.requestChanges(id, note || "Please review and update.");
-    setNote("");
+    
+    // For now, we'll update the status back to draft with a note
+    // In a real implementation, you'd want to store the reviewer notes
+    const result = await adminService.updateVideoLecture(id, { 
+      content: { reviewer_notes: note }
+    });
+    
+    if (result.success) {
+      showToast(true, "Changes requested successfully");
+      setNote("");
+      load();
+    } else {
+      showToast(false, result.error || "Failed to request changes");
+    }
+    
     setBusyId(null);
-    load();
   };
 
   return (
@@ -42,6 +79,19 @@ const ReviewQueuePage = () => {
         <h2 className="text-xl font-bold text-card-foreground">Review Queue</h2>
         <p className="text-sm text-muted-foreground">Approve or request changes for items awaiting review.</p>
       </div>
+
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <h3 className="text-lg font-semibold text-red-800">Error Loading Review Queue</h3>
+          <p className="text-red-600">{error}</p>
+          <button 
+            onClick={load}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       <div className="space-y-3">
         {loading ? (
@@ -57,7 +107,7 @@ const ReviewQueuePage = () => {
                 <div>
                   <p className="text-sm font-semibold text-card-foreground">{item.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {item.contentType} • v{item.version} • {new Date(item.lastUpdated).toLocaleDateString()}
+                    {item.content_type} • v{item.version} • {new Date(item.updated_at).toLocaleDateString()}
                   </p>
                 </div>
                 <Badge variant="outline" className="w-fit">

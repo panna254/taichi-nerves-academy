@@ -5,8 +5,10 @@ import DashboardOverview from "./DashboardOverview";
 import ContentListPage from "./ContentListPage";
 import ContentEditorPage from "./ContentEditorPage";
 import ReviewQueuePage from "./ReviewQueuePage";
-import MediaLibraryPage from "./MediaLibraryPage";
+import MediaLibrary from "./MediaLibrary";
 import UsersRolesPage from "./UsersRolesPage";
+import Settings from "./Settings";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 import { AdminAuthProvider, useAdminAuth } from "@/hooks/useAdminAuth";
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
@@ -31,12 +33,14 @@ const AdminRouter = () => {
           }
         >
           <Route index element={<DashboardOverview />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
           <Route path="content" element={<ContentListPage />} />
           <Route path="content/new" element={<ContentEditorPage />} />
           <Route path="content/:id" element={<ContentEditorPage />} />
           <Route path="review" element={<ReviewQueuePage />} />
-          <Route path="media" element={<MediaLibraryPage />} />
+          <Route path="media" element={<MediaLibrary />} />
           <Route path="users" element={<UsersRolesPage />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>

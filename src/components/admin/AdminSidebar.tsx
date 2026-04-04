@@ -1,13 +1,15 @@
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
-import { LayoutGrid, FilePlus2, FileText, ClipboardList, Image, Users } from "lucide-react";
+import { LayoutGrid, FilePlus2, FileText, ClipboardList, Image, Users, BarChart3 } from "lucide-react";
 
 const navItems = [
   { label: "Overview", to: "/admin", icon: LayoutGrid },
+  { label: "Analytics", to: "/admin/analytics", icon: BarChart3 },
   { label: "Create Content", to: "/admin/content/new", icon: FilePlus2 },
   { label: "Manage Content", to: "/admin/content", icon: FileText },
   { label: "Review Queue", to: "/admin/review", icon: ClipboardList },
   { label: "Media Library", to: "/admin/media", icon: Image },
   { label: "Users & Roles", to: "/admin/users", icon: Users },
+  { label: "Settings", to: "/admin/settings", icon: Users },
 ];
 
 const AdminSidebar = () => {
