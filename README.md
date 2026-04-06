@@ -47,88 +47,79 @@
 - [🤝 Contributing](#-contributing)
 - [📝 License](#-license)
 - [📧 Contact](#-contact)
-- [🙏 Acknowledgments](#-acknowledgments)
 
-## 🎯 About The Project
+## About The Project
 
 Taichi Nerves Academy is a comprehensive medical education platform designed specifically for healthcare students and professionals. The platform provides high-quality, subscription-based learning resources including video lectures, study notes, podcasts, and interactive quizzes across various medical topics.
 
 ### Why Taichi Nerves?
 
----
+- **Comprehensive Content**: Video lectures, study notes, podcasts, and quizzes
+- **Medical Focus**: Tailored for healthcare students (medical, nursing, allied health)
+- **Affordable**: Flexible subscription plans (monthly/annual)
+- **Accessible**: Responsive design works on desktop, tablet, and mobile
+- **Secure**: Enterprise-grade authentication and data protection
+- **Analytics**: Track your learning progress and performance
 
-📚 **Comprehensive Content**: Video lectures, study notes, podcasts, and quizzes
-🎓 **Medical Focus**: Tailored for healthcare students (medical, nursing, allied health)
-💰 **Affordable**: Flexible subscription plans (monthly/annual)
-📱 **Accessible**: Responsive design works on desktop, tablet, and mobile
-🔐 **Secure**: Enterprise-grade authentication and data protection
-📊 **Analytics**: Track your learning progress and performance
+## Features
 
----
-
-## ✨ Features
-
-### 👨‍🎓 For Learners
+### For Learners
 
 ---
 
-🎥 **Video Lectures**: High-quality educational videos covering major medical topics
-📖 **Study Notes**: Comprehensive downloadable notes and materials
-🎧 **Podcasts**: Learn on-the-go with educational audio content
-🧠 **Interactive Quizzes**: Test your knowledge and track progress
-🔍 **Smart Search**: Find content quickly with advanced filtering
-📈 **Progress Tracking**: Monitor your learning journey
-🏷️ **Topic Categories**: Organized content (Anatomy, Physiology, Pathology, Pharmacology, etc.)
+• 🎥 **Video Lectures**: High-quality educational videos covering major medical topics
+• 📖 **Study Notes**: Comprehensive downloadable notes and materials
 
-### 👨‍💼 For Admins
+### For Admins
 
 ---
 
-📊 **Comprehensive Dashboard**: Real-time analytics and insights
-📤 **Content Management**: Easy upload and management of all content types
-👥 **User Management**: View users, manage subscriptions, and access controls
-📋 **Media Library**: Organized content library with search and filters
-🔐 **Role-Based Access**: Granular permissions for different admin roles
-📈 **Analytics**: Content performance, user engagement, and subscription metrics
-⚙️ **Settings**: Platform configuration and customization
+- **Comprehensive Dashboard**: Real-time analytics and insights
+- **Content Management**: Easy upload and management of all content types
+- **User Management**: View users, manage subscriptions, and access controls
+- **Media Library**: Organized content library with search and filters
+- **Role-Based Access**: Granular permissions for different admin roles
+- **Analytics**: Content performance, user engagement, and subscription metrics
+- **Settings**: Platform configuration and customization
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
+### Frontend
 ### 🎨 Frontend
 
 ---
 
-**Framework**: React 18 with TypeScript  
-**Build Tool**: Vite  
-**Styling**: Tailwind CSS  
-**UI Components**: Radix UI + shadcn/ui  
-**Icons**: Lucide React  
-**Routing**: React Router v6  
-**State Management**: TanStack Query (React Query)  
-**Forms**: React Hook Form  
-**Charts**: Recharts
+• **Framework**: React 18 with TypeScript
+• **Build Tool**: Vite
+• **Styling**: Tailwind CSS
+• **UI Components**: Radix UI + shadcn/ui
+• **Icons**: Lucide React
+• **Routing**: React Router v6
+• **State Management**: TanStack Query (React Query)
+• **Forms**: React Hook Form
+• **Charts**: Recharts
 
 ### 🗄️ Backend & Services
 
 ---
 
-**Database**: Supabase (PostgreSQL)  
-**Authentication**: Supabase Auth / Clerk  
-**Storage**: Supabase Storage  
-**Payments**: Stripe  
-**Hosting**: Netlify
+• **Database**: Supabase (PostgreSQL)
+• **Authentication**: Supabase Auth / Clerk
+• **Storage**: Supabase Storage
+• **Payments**: Stripe
+• **Hosting**: Netlify
 
 ### 🛠️ Development Tools
 
 ---
 
-**Version Control**: Git & GitHub  
-**Package Manager**: npm  
-**Linting**: ESLint  
-**Formatting**: Prettier  
-**Type Checking**: TypeScript
+• **Version Control**: Git & GitHub
+• **Package Manager**: npm
+• **Linting**: ESLint
+• **Formatting**: Prettier
+• **Type Checking**: TypeScript
 
 ---
 
@@ -211,22 +202,22 @@ VITE_APP_ENV=development
 
 ### For Students/Learners
 
-Sign Up: Create an account with email
-Choose Plan: Select monthly or annual subscription
-Complete Payment: Secure checkout via Stripe
-Access Content: Browse topics and start learning
-Track Progress: Monitor your learning journey
+- **Sign Up**: Create an account with email
+- **Choose Plan**: Select monthly or annual subscription
+- **Complete Payment**: Secure checkout via Stripe
+- **Access Content**: Browse topics and start learning
+- **Track Progress**: Monitor your learning journey
 
-For Admins
+### For Admins
 
-Admin Access: Contact admin to grant access
-Login: Use /admin route
-Upload Content: Add videos, notes, podcasts, quizzes
-Manage Users: View and manage subscriptions
-Monitor Analytics: Track platform performance
+- **Admin Access**: Contact admin to grant access
+- **Login**: Use /admin route
+- **Upload Content**: Add videos, notes, podcasts, quizzes
+- **Manage Users**: View and manage subscriptions
+- **Monitor Analytics**: Track platform performance
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```bash
 taichi-nerves-academy/
@@ -273,117 +264,127 @@ taichi-nerves-academy/
 
 🎛️ Admin Dashboard
 The admin dashboard provides comprehensive content management capabilities:
-Features
+### 📋 Features
 
-Dashboard: Overview with key metrics and analytics
-Media Library: Manage all content (videos, notes, podcasts, quizzes)
-Users & Roles: User management and subscription control
-Analytics: Content performance and user engagement
-Settings: Platform configuration
+* **Dashboard**: Overview with key metrics and analytics
+* **Media Library**: Manage all content (videos, notes, podcasts, quizzes)
+* **Users & Roles**: User management and subscription control
+* **Analytics**: Content performance and user engagement
+* **Settings**: Platform configuration
 
-Access Admin Dashboard
+### 🔐 Access Admin Dashboard
 
-Navigate to /admin
-Login with admin credentials
-Explore the dashboard features
+* **Navigate to** `/admin`
+* **Login with** admin credentials
+* **Explore the** dashboard features
 
-Making a User Admin
+### 👨‍💼 Making a User Admin
+
 Run this SQL in Supabase SQL Editor:
-sql-- Find user ID
+
+```sql
+-- Find user ID
 SELECT id, email FROM users WHERE email = 'admin@example.com';
 
 -- Grant admin access
 INSERT INTO admin_users (user_id, role)
 VALUES ('user-id-here', 'admin');
+```
 
 🗄️ Database Schema
-Core Tables
 
-users: User accounts and profiles
-subscriptions: Subscription records and status
-topics: Content categories
-video_lectures: Video content
-notes: Study materials
-podcasts: Audio content
-quizzes: Quiz metadata
-quiz_questions: Quiz questions and answers
-user_progress: Learning progress tracking
-admin_users: Admin role assignments
+### 📋 Core Tables
 
-Setup Database
-Run the complete schema located in database/schema.sql in your Supabase SQL Editor.
-Key Features:
+---
 
-Row Level Security (RLS) enabled
-Foreign key constraints
-Indexes for performance
-Audit logging support
-Soft delete capability
+- **users**: User accounts and profiles
+- **subscriptions**: Subscription records and status
+- **topics**: Content categories
+- **video_lectures**: Video content
+- **notes**: Study materials
+- **podcasts**: Audio content
+- **quizzes**: Quiz metadata
+- **quiz_questions**: Quiz questions and answers
+- **user_progress**: Learning progress tracking
+- **admin_users**: Admin role assignments
 
+### 🛠️ Setup Database
+
+---
+
+- **Run the complete schema** located in `database/schema.sql` in your Supabase SQL Editor
+
+### 🔑 Key Features
+
+---
+
+- **Row Level Security (RLS)** enabled
+- **Foreign key constraints**
+- **Indexes for performance**
+- **Audit logging support**
+- **Soft delete capability**
 
 🚀 Deployment
 Deploy to Netlify
 
-Connect Repository
+### 🌐 Deploy to Netlify
 
-Login to Netlify
-Click "Add new site" → "Import an existing project"
-Select your GitHub repository
+#### 🔗 Connect Repository
 
+* **Login to** Netlify
+* **Click** "Add new site" → "Import an existing project"
+* **Select your** GitHub repository
 
-Configure Build Settings
+#### ⚙️ Configure Build Settings
 
-Build command: npm run build
-Publish directory: dist
+* **Build command**: `npm run build`
+* **Publish directory**: `dist`
 
+#### 🔐 Add Environment Variables
 
-Add Environment Variables
+* **Go to** Site settings → Environment variables
+* **Add all** variables from `.env.example`
 
-Go to Site settings → Environment variables
-Add all variables from .env.example
+#### 🚀 Deploy
 
+* **Click** "Deploy site"
+* **Wait for** build to complete
 
-Deploy
+### 🌍 Custom Domain (Optional)
 
-Click "Deploy site"
-Wait for build to complete
-
-
-
-Custom Domain (Optional)
-
-Go to Domain settings in Netlify
-Add custom domain
-Configure DNS records at your domain registrar
-Enable HTTPS (automatic with Netlify)
+* **Go to** Domain settings in Netlify
+* **Add custom** domain
+* **Configure DNS** records at your domain registrar
+* **Enable HTTPS** (automatic with Netlify)
 
 
 🤝 Contributing
 Contributions are what make the open-source community amazing! Any contributions you make are greatly appreciated.
-How to Contribute
 
-Fork the Project
-Create your Feature Branch
+### How to Contribute
 
-bash   git checkout -b feature/AmazingFeature
+* Fork the Project
+* Create your Feature Branch
+```bash
+git checkout -b feature/AmazingFeature
+```
+* Commit your Changes
+```bash
+git commit -m 'Add some AmazingFeature'
+```
+* Push to the Branch
+```bash
+git push origin feature/AmazingFeature
+```
+* Open a Pull Request
 
-Commit your Changes
+### Development Guidelines
 
-bash   git commit -m 'Add some AmazingFeature'
-
-Push to the Branch
-
-bash   git push origin feature/AmazingFeature
-
-Open a Pull Request
-
-Development Guidelines
-
-Follow existing code style and conventions
-Write meaningful commit messages
-Add comments for complex logic
-Test your changes thoroughly
-Update documentation as needed
+* Follow existing code style and conventions
+* Write meaningful commit messages
+* Add comments for complex logic
+* Test your changes thoroughly
+* Update documentation as needed
 
 
 📝 License
@@ -447,14 +448,26 @@ Next Milestone: v1.1 - Enhanced Analytics
 🐛 Known Issues
 See the issues page for a list of known issues and planned improvements.
 
-💬 Support
+## 💬 Support
+
 Need help? Here's how to get support:
 
-Documentation: Check this README and inline code comments
-Issues: Open an issue on GitHub
-Email: Contact oketchonyango19@gmail.com
-Community: Join our discussions (coming soon)
+---
 
+- **Documentation**: Check this README and inline code comments
+- **Issues**: Open an issue on GitHub
+- **Email**: Contact oketchonyango19@gmail.com
+- **Community**: Join our discussions (coming soon)
+
+## 📚 Additional Resources
+
+---
+
+- **Supabase Documentation**
+- **React Documentation**
+- **Tailwind CSS Documentation**
+- **TypeScript Handbook**
+- **Netlify Documentation**
 
 📸 Screenshots
 
