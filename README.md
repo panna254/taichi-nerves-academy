@@ -7,11 +7,11 @@
   
   <img src="src/assets/hero-medical-education.jpg" alt="Medical Education Platform" width="800" style="border-radius: 8px; margin: 20px 0;">
   
-  <div style="margin: 20px 0;">
+  <p style="margin: 20px 0;">
     <img src="public/android-chrome-192x192.png" alt="Mobile App" width="60" height="60" style="margin: 0 10px;">
     <img src="public/android-chrome-512x512.png" alt="Web Platform" width="60" height="60" style="margin: 0 10px;">
     <img src="public/apple-touch-icon.png" alt="iOS App" width="60" height="60" style="margin: 0 10px;">
-  </div>
+  </p>
   
   <p>
     <a href="#demo">
@@ -411,17 +411,26 @@ Community: Join our discussions (coming soon)
 
 
 📸 Screenshots
-Landing Page
-<img src="src/assets/hero-medical-education.jpg" alt="Landing Page" width="800" style="border-radius: 8px;">
 
-Resources Library
-<img src="public/placeholder.jpg" alt="Resources Library" width="800" style="border-radius: 8px;">
+### Landing Page
+<div align="center">
+  <img src="src/assets/hero-medical-education.jpg" alt="Landing Page" width="800" style="border-radius: 8px;">
+</div>
 
-Admin Dashboard
-<img src="public/placeholder.jpg" alt="Admin Dashboard" width="800" style="border-radius: 8px;">
+### Resources Library
+<div align="center">
+  <img src="public/placeholder.jpg" alt="Resources Library" width="800" style="border-radius: 8px;">
+</div>
 
-Video Player
-<img src="public/placeholder.jpg" alt="Video Player" width="800" style="border-radius: 8px;">
+### Admin Dashboard
+<div align="center">
+  <img src="public/placeholder.jpg" alt="Admin Dashboard" width="800" style="border-radius: 8px;">
+</div>
+
+### Video Player
+<div align="center">
+  <img src="public/placeholder.jpg" alt="Video Player" width="800" style="border-radius: 8px;">
+</div>
 
 ⚡ Performance
 
