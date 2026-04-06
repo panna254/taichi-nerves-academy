@@ -1,4 +1,4 @@
-# Taichi Nerves Academy
+# 🏥 Taichi Nerves Academy
 
 <div align="center">
   <img src="public/logo.png" alt="Taichi Nerves Logo" width="120" height="120">
@@ -26,137 +26,177 @@
   </p>
 </div>
 
-📋 Table of Contents
+---
 
-About The Project
-Features
-Tech Stack
-Getting Started
+## 📋 Table of Contents
 
-Prerequisites
-Installation
-Environment Variables
+- [🎯 About The Project](#-about-the-project)
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+- [💡 Usage](#-usage)
+  - [For Students/Learners](#for-studentslearners)
+  - [For Admins](#for-admins)
+- [📁 Project Structure](#-project-structure)
+- [🎛️ Admin Dashboard](#️-admin-dashboard)
+- [🗄️ Database Schema](#️-database-schema)
+- [🚀 Deployment](#-deployment)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+- [📧 Contact](#-contact)
+- [🙏 Acknowledgments](#-acknowledgments)
 
+## 🎯 About The Project
 
-Usage
-Project Structure
-Admin Dashboard
-Database Schema
-Deployment
-Contributing
-License
-Contact
-Acknowledgments
-
-
-🎯 About The Project
 Taichi Nerves Academy is a comprehensive medical education platform designed specifically for healthcare students and professionals. The platform provides high-quality, subscription-based learning resources including video lectures, study notes, podcasts, and interactive quizzes across various medical topics.
-Why Taichi Nerves?
 
-📚 Comprehensive Content: Video lectures, study notes, podcasts, and quizzes
-🎓 Medical Focus: Tailored for healthcare students (medical, nursing, allied health)
-💰 Affordable: Flexible subscription plans (monthly/annual)
-📱 Accessible: Responsive design works on desktop, tablet, and mobile
-🔐 Secure: Enterprise-grade authentication and data protection
-📊 Analytics: Track your learning progress and performance
+### Why Taichi Nerves?
 
+---
 
-✨ Features
-For Learners
+📚 **Comprehensive Content**: Video lectures, study notes, podcasts, and quizzes
+🎓 **Medical Focus**: Tailored for healthcare students (medical, nursing, allied health)
+💰 **Affordable**: Flexible subscription plans (monthly/annual)
+📱 **Accessible**: Responsive design works on desktop, tablet, and mobile
+🔐 **Secure**: Enterprise-grade authentication and data protection
+📊 **Analytics**: Track your learning progress and performance
 
-🎥 Video Lectures: High-quality educational videos covering major medical topics
-📖 Study Notes: Comprehensive downloadable notes and materials
-🎧 Podcasts: Learn on-the-go with educational audio content
-🧠 Interactive Quizzes: Test your knowledge and track progress
-🔍 Smart Search: Find content quickly with advanced filtering
-📈 Progress Tracking: Monitor your learning journey
-🏷️ Topic Categories: Organized content (Anatomy, Physiology, Pathology, Pharmacology, etc.)
+---
 
-For Admins
+## ✨ Features
 
-📊 Comprehensive Dashboard: Real-time analytics and insights
-📤 Content Management: Easy upload and management of all content types
-👥 User Management: View users, manage subscriptions, and access controls
-📋 Media Library: Organized content library with search and filters
-🔐 Role-Based Access: Granular permissions for different admin roles
-📈 Analytics: Content performance, user engagement, and subscription metrics
-⚙️ Settings: Platform configuration and customization
+### 👨‍🎓 For Learners
 
+---
 
-🛠️ Tech Stack
-Frontend
+🎥 **Video Lectures**: High-quality educational videos covering major medical topics
+📖 **Study Notes**: Comprehensive downloadable notes and materials
+🎧 **Podcasts**: Learn on-the-go with educational audio content
+🧠 **Interactive Quizzes**: Test your knowledge and track progress
+🔍 **Smart Search**: Find content quickly with advanced filtering
+📈 **Progress Tracking**: Monitor your learning journey
+🏷️ **Topic Categories**: Organized content (Anatomy, Physiology, Pathology, Pharmacology, etc.)
 
-Framework: React 18 with TypeScript
-Build Tool: Vite
-Styling: Tailwind CSS
-UI Components: Radix UI + shadcn/ui
-Icons: Lucide React
-Routing: React Router v6
-State Management: TanStack Query (React Query)
-Forms: React Hook Form
-Charts: Recharts
+### 👨‍💼 For Admins
 
-Backend & Services
+---
 
-Database: Supabase (PostgreSQL)
-Authentication: Supabase Auth / Clerk
-Storage: Supabase Storage
-Payments: Stripe
-Hosting: Netlify
+📊 **Comprehensive Dashboard**: Real-time analytics and insights
+📤 **Content Management**: Easy upload and management of all content types
+👥 **User Management**: View users, manage subscriptions, and access controls
+📋 **Media Library**: Organized content library with search and filters
+🔐 **Role-Based Access**: Granular permissions for different admin roles
+📈 **Analytics**: Content performance, user engagement, and subscription metrics
+⚙️ **Settings**: Platform configuration and customization
 
-Development Tools
+---
 
-Version Control: Git & GitHub
-Package Manager: npm
-Linting: ESLint
-Formatting: Prettier
-Type Checking: TypeScript
+## 🛠️ Tech Stack
 
+### 🎨 Frontend
 
-🚀 Getting Started
-Follow these steps to set up the project locally.
-Prerequisites
+---
 
-Node.js (v18 or higher)
-npm or yarn
-Git
-Supabase Account (free tier available)
-Clerk Account (optional, for authentication)
-Stripe Account (optional, for payments)
+**Framework**: React 18 with TypeScript  
+**Build Tool**: Vite  
+**Styling**: Tailwind CSS  
+**UI Components**: Radix UI + shadcn/ui  
+**Icons**: Lucide React  
+**Routing**: React Router v6  
+**State Management**: TanStack Query (React Query)  
+**Forms**: React Hook Form  
+**Charts**: Recharts
 
-Installation
+### 🗄️ Backend & Services
 
-Clone the repository
+---
 
-bash   git clone https://github.com/panna254/taichi-nerves-academy.git
-   cd taichi-nerves-academy
+**Database**: Supabase (PostgreSQL)  
+**Authentication**: Supabase Auth / Clerk  
+**Storage**: Supabase Storage  
+**Payments**: Stripe  
+**Hosting**: Netlify
 
-Install dependencies
+### 🛠️ Development Tools
 
-bash   npm install
+---
 
-Set up environment variables
+**Version Control**: Git & GitHub  
+**Package Manager**: npm  
+**Linting**: ESLint  
+**Formatting**: Prettier  
+**Type Checking**: TypeScript
 
-bash   cp .env.example .env
-Edit .env with your credentials (see Environment Variables)
+---
 
-Set up Supabase database
+## Getting Started
 
-Create a new Supabase project
-Run the SQL schema from database/schema.sql in Supabase SQL Editor
-Create storage buckets: videos, notes, podcasts, temp
+> **Follow these steps to set up the project locally and start contributing.**
 
+### Prerequisites
 
-Start development server
+---
 
-bash   npm run dev
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **Git**
+- **Supabase Account** (free tier available)
+- **Clerk Account** (optional, for authentication)
+- **Stripe Account** (optional, for payments)
 
-Open your browser
-Navigate to http://localhost:5173
+### Installation
 
-Environment Variables
-Create a .env file in the root directory with the following variables:
-env# Supabase
+---
+
+#### Clone the repository
+
+```bash
+git clone https://github.com/panna254/taichi-nerves-academy.git
+cd taichi-nerves-academy
+```
+
+#### Install dependencies
+
+```bash
+npm install
+```
+
+#### Set up environment variables
+
+```bash
+cp .env.example .env
+# Edit .env with your credentials (see Environment Variables section)
+```
+
+#### Set up Supabase database
+
+---
+
+1. **Create a new Supabase project**
+2. **Run the SQL schema** from `database/schema.sql` in Supabase SQL Editor
+3. **Create storage buckets**: `videos`, `notes`, `podcasts`, `temp`
+
+#### Start development server
+
+```bash
+npm run dev
+```
+
+#### Open your browser
+
+Navigate to **http://localhost:5173**
+
+### Environment Variables
+
+> **Important**: Never commit your `.env` file to version control!
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# Supabase
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
@@ -164,13 +204,12 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 
 # Daraja/PayHero Payments (optional)
-
-# Environment
 VITE_APP_ENV=development
-Important: Never commit your .env file to version control!
+```
 
-💡 Usage
-For Students/Learners
+## Usage
+
+### For Students/Learners
 
 Sign Up: Create an account with email
 Choose Plan: Select monthly or annual subscription
@@ -187,43 +226,50 @@ Manage Users: View and manage subscriptions
 Monitor Analytics: Track platform performance
 
 
-📁 Project Structure
+## 📁 Project Structure
+
+```bash
 taichi-nerves-academy/
-├── public/                 # Static assets
-├── src/
-│   ├── components/         # React components
-│   │   ├── admin/         # Admin dashboard components
-│   │   ├── layout/        # Layout components (Header, Footer)
-│   │   ├── learner/       # Learner-facing components
-│   │   └── ui/            # Reusable UI components
-│   ├── hooks/             # Custom React hooks
-│   │   ├── useAuth.tsx    # Authentication hook
-│   │   ├── useSubscription.ts
-│   │   └── useAdmin.ts
-│   ├── lib/               # Utilities and configs
-│   │   ├── supabase.ts    # Supabase client
-│   │   └── utils.ts       # Helper functions
-│   ├── pages/             # Page components
-│   │   ├── admin/         # Admin pages
-│   │   ├── Home.tsx
-│   │   ├── Topics.tsx
-│   │   ├── Resources.tsx
-│   │   └── Membership.tsx
-│   ├── services/          # API services
-│   │   ├── adminService.ts
-│   │   ├── analyticsService.ts
-│   │   └── contentService.ts
-│   ├── types/             # TypeScript type definitions
-│   ├── App.tsx            # Main App component
-│   ├── main.tsx           # Entry point
-│   └── index.css          # Global styles
-├── database/
-│   └── schema.sql         # Database schema
-├── .env.example           # Environment variables template
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── README.md
+├── 📁 public/                 # Static assets
+│   ├── 🖼️ logo.png
+│   ├── 🖼️ hero-medical-education.jpg
+│   ├── 🖼️ placeholder.jpg
+│   └── 📱 app icons (android-chrome-*.png, apple-touch-icon.png)
+├── 📁 src/
+│   ├── 🧩 components/         # React components
+│   │   ├── 🛠️ admin/         # Admin dashboard components
+│   │   ├── 📐 layout/        # Layout components (Header, Footer)
+│   │   ├── 👨‍🎓 learner/       # Learner-facing components
+│   │   └── 🎨 ui/            # Reusable UI components
+│   ├── 🪝 hooks/             # Custom React hooks
+│   │   ├── 🔐 useAuth.tsx    # Authentication hook
+│   │   ├── 💳 useSubscription.ts
+│   │   └── 👨‍💼 useAdmin.ts
+│   ├── 📚 lib/               # Utilities and configs
+│   │   ├── 🗄️ supabase.ts    # Supabase client
+│   │   └── 🛠️ utils.ts       # Helper functions
+│   ├── 📄 pages/             # Page components
+│   │   ├── 🛠️ admin/         # Admin pages
+│   │   ├── 🏠 Home.tsx
+│   │   ├── 📚 Topics.tsx
+│   │   ├── 📖 Resources.tsx
+│   │   └── 💳 Membership.tsx
+│   ├── 🛠️ services/          # API services
+│   │   ├── 🛠️ adminService.ts
+│   │   ├── 📊 analyticsService.ts
+│   │   └── 📚 contentService.ts
+│   ├── 📝 types/             # TypeScript type definitions
+│   ├── 🎯 App.tsx            # Main App component
+│   ├── 🚀 main.tsx           # Entry point
+│   └── 🎨 index.css          # Global styles
+├── 🗄️ database/
+│   └── 📋 schema.sql         # Database schema
+├── 🔧 .env.example           # Environment variables template
+├── 📦 package.json
+├── ⚙️ tsconfig.json
+├── 🛠️ vite.config.ts
+└── 📖 README.md
+```
 
 🎛️ Admin Dashboard
 The admin dashboard provides comprehensive content management capabilities:
