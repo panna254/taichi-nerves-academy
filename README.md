@@ -396,7 +396,7 @@ Distributed under the MIT License. See LICENSE for more information.
 **Project Maintainer:** Moses Oketch
 
 - **Email:** - oketchonyango19@gmail.com
-- **GitHub:** - @panna254
+- **GitHub:** - https://github.com/panna254/
 - **Project Link:** - https://github.com/panna254/taichi-nerves-academy
 
 
@@ -483,24 +483,29 @@ Need help? Here's how to get support:
 
 ## 📸 Screenshots
 
-### 🏠 Landing Page
 <div align="center">
-  <img src="src/assets/hero-medical-education.jpg" alt="Landing Page" width="800" style="border-radius: 8px;">
-</div>
-
-### 📚 Resources Library
-<div align="center">
-  <img src="public/placeholder.jpg" alt="Resources Library" width="800" style="border-radius: 8px;">
-</div>
-
-### 🎛️ Admin Dashboard
-<div align="center">
-  <img src="public/placeholder.jpg" alt="Admin Dashboard" width="800" style="border-radius: 8px;">
-</div>
-
-### 🎥 Video Player
-<div align="center">
-  <img src="public/placeholder.jpg" alt="Video Player" width="800" style="border-radius: 8px;">
+  <table>
+    <tr>
+      <td align="center" style="padding: 10px;">
+        <strong>🏠 Landing Page</strong><br>
+        <img src="src/assets/hero-medical-education.jpg" alt="Landing Page" width="350" style="border-radius: 8px;">
+      </td>
+      <td align="center" style="padding: 10px;">
+        <strong>📚 Resources Library</strong><br>
+        <img src="public/placeholder.jpg" alt="Resources Library" width="350" style="border-radius: 8px;">
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding: 10px;">
+        <strong>🎛️ Admin Dashboard</strong><br>
+        <img src="public/placeholder.jpg" alt="Admin Dashboard" width="350" style="border-radius: 8px;">
+      </td>
+      <td align="center" style="padding: 10px;">
+        <strong>🎥 Video Player</strong><br>
+        <img src="public/placeholder.jpg" alt="Video Player" width="350" style="border-radius: 8px;">
+      </td>
+    </tr>
+  </table>
 </div>
 
 <div align="center">
