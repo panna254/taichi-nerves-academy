@@ -67,8 +67,13 @@ Taichi Nerves Academy is a comprehensive medical education platform designed spe
 
 ---
 
-• 🎥 **Video Lectures**: High-quality educational videos covering major medical topics
-• 📖 **Study Notes**: Comprehensive downloadable notes and materials
+- 🎥 **Video Lectures**: High-quality educational videos covering major medical topics
+- 📖 **Study Notes**: Comprehensive downloadable notes and materials
+- 🎧 **Podcasts**: Learn on-the-go with educational audio content
+- 🧠 **Interactive Quizzes**: Test your knowledge and track progress
+- 🔍 **Smart Search**: Find content quickly with advanced filtering
+- 📈 **Progress Tracking**: Monitor your learning journey
+- 🏷️ **Topic Categories**: Organized content (Anatomy, Physiology, Pathology, Pharmacology, etc.)
 
 ### For Admins
 
@@ -86,40 +91,36 @@ Taichi Nerves Academy is a comprehensive medical education platform designed spe
 
 ## Tech Stack
 
-### Frontend
 ### 🎨 Frontend
 
 ---
-
-• **Framework**: React 18 with TypeScript
-• **Build Tool**: Vite
-• **Styling**: Tailwind CSS
-• **UI Components**: Radix UI + shadcn/ui
-• **Icons**: Lucide React
-• **Routing**: React Router v6
-• **State Management**: TanStack Query (React Query)
-• **Forms**: React Hook Form
-• **Charts**: Recharts
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI + shadcn/ui
+- **Icons**: Lucide React
+- **Routing**: React Router v6
+- **State Management**: TanStack Query (React Query)
+- **Forms**: React Hook Form
+- **Charts**: Recharts
 
 ### 🗄️ Backend & Services
 
 ---
-
-• **Database**: Supabase (PostgreSQL)
-• **Authentication**: Supabase Auth / Clerk
-• **Storage**: Supabase Storage
-• **Payments**: Stripe
-• **Hosting**: Netlify
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth / Clerk
+- **Storage**: Supabase Storage
+- **Payments**: Stripe
+- **Hosting**: Netlify
 
 ### 🛠️ Development Tools
 
 ---
-
-• **Version Control**: Git & GitHub
-• **Package Manager**: npm
-• **Linting**: ESLint
-• **Formatting**: Prettier
-• **Type Checking**: TypeScript
+- **Version Control**: Git & GitHub
+- **Package Manager**: npm
+- **Linting**: ESLint
+- **Formatting**: Prettier
+- **Type Checking**: TypeScript
 
 ---
 
@@ -264,19 +265,20 @@ taichi-nerves-academy/
 
 🎛️ Admin Dashboard
 The admin dashboard provides comprehensive content management capabilities:
+
 ### 📋 Features
 
-* **Dashboard**: Overview with key metrics and analytics
-* **Media Library**: Manage all content (videos, notes, podcasts, quizzes)
-* **Users & Roles**: User management and subscription control
-* **Analytics**: Content performance and user engagement
-* **Settings**: Platform configuration
+- **Dashboard**: Overview with key metrics and analytics
+- **Media Library**: Manage all content (videos, notes, podcasts, quizzes)
+- **Users & Roles**: User management and subscription control
+- **Analytics**: Content performance and user engagement
+- **Settings**: Platform configuration
 
 ### 🔐 Access Admin Dashboard
 
-* **Navigate to** `/admin`
-* **Login with** admin credentials
-* **Explore the** dashboard features
+- **Navigate to** `/admin`
+- **Login with** admin credentials
+- **Explore the** dashboard features
 
 ### 👨‍💼 Making a User Admin
 
@@ -331,31 +333,31 @@ Deploy to Netlify
 
 #### 🔗 Connect Repository
 
-* **Login to** Netlify
-* **Click** "Add new site" → "Import an existing project"
-* **Select your** GitHub repository
+- **Login to** Netlify
+- **Click** "Add new site" → "Import an existing project"
+- **Select your** GitHub repository
 
 #### ⚙️ Configure Build Settings
 
-* **Build command**: `npm run build`
-* **Publish directory**: `dist`
+- **Build command**: `npm run build`
+- **Publish directory**: `dist`
 
 #### 🔐 Add Environment Variables
 
-* **Go to** Site settings → Environment variables
-* **Add all** variables from `.env.example`
+- **Go to** Site settings → Environment variables
+- **Add all** variables from `.env.example`
 
 #### 🚀 Deploy
 
-* **Click** "Deploy site"
-* **Wait for** build to complete
+- **Click** "Deploy site"
+- **Wait for** build to complete
 
 ### 🌍 Custom Domain (Optional)
 
-* **Go to** Domain settings in Netlify
-* **Add custom** domain
-* **Configure DNS** records at your domain registrar
-* **Enable HTTPS** (automatic with Netlify)
+- **Go to** Domain settings in Netlify
+- **Add custom** domain
+- **Configure DNS** records at your domain registrar
+- **Enable HTTPS** (automatic with Netlify)
 
 
 🤝 Contributing
@@ -363,28 +365,28 @@ Contributions are what make the open-source community amazing! Any contributions
 
 ### How to Contribute
 
-* Fork the Project
-* Create your Feature Branch
+- **Fork the Project**
+- **Create your Feature Branch**
 ```bash
 git checkout -b feature/AmazingFeature
 ```
-* Commit your Changes
+- **Commit your Changes**
 ```bash
 git commit -m 'Add some AmazingFeature'
 ```
-* Push to the Branch
+- **Push to the Branch**
 ```bash
 git push origin feature/AmazingFeature
 ```
-* Open a Pull Request
+- **Open a Pull Request**
 
 ### Development Guidelines
 
-* Follow existing code style and conventions
-* Write meaningful commit messages
-* Add comments for complex logic
-* Test your changes thoroughly
-* Update documentation as needed
+- **Follow existing code style and conventions**
+- **Write meaningful commit messages**
+- **Add comments for complex logic**
+- **Test your changes thoroughly**
+- **Update documentation as needed**
 
 
 📝 License
@@ -398,55 +400,65 @@ GitHub: @panna254
 Project Link: https://github.com/panna254/taichi-nerves-academy
 
 
-🙏 Acknowledgments
+## 🙏 Acknowledgments
 
-React - UI framework
-Supabase - Backend and database
-Tailwind CSS - Styling
-Netlify - Hosting
-Daraja/PayHero - Payment processing
-Lucide Icons - Beautiful icons
-shadcn/ui - UI components
-Medical education community for inspiration
+---
 
+- **React** - UI framework
+- **Supabase** - Backend and database
+- **Tailwind CSS** - Styling
+- **Netlify** - Hosting
+- **Daraja/PayHero** - Payment processing
+- **Lucide Icons** - Beautiful icons
+- **shadcn/ui** - UI components
+- **Medical education community** for inspiration
 
-🗺️ Roadmap
-Current Features (v1.0)
+## 🗺️ Roadmap
 
-✅ User authentication and authorization
-✅ Subscription management
-✅ Video lectures
-✅ Study notes
-✅ Podcasts
-✅ Interactive quizzes
-✅ Admin dashboard
-✅ Content management
-✅ Analytics
+### ✅ Current Features (v1.0)
 
-Planned Features (v2.0)
+---
 
-🔲 Mobile app (React Native)
-🔲 Live webinars and Q&A sessions
-🔲 Discussion forums
-🔲 Peer-to-peer tutoring
-🔲 Certification programs
-🔲 AI-powered study recommendations
-🔲 Offline content access
-🔲 Multi-language support
-🔲 Social learning features
-🔲 Advanced analytics and reporting
+- **User authentication** and authorization
+- **Subscription management**
+- **Video lectures**
+- **Study notes**
+- **Podcasts**
+- **Interactive quizzes**
+- **Admin dashboard**
+- **Content management**
+- **Analytics**
 
+### 🔲 Planned Features (v2.0)
 
-📊 Project Status
+---
 
-Current Version: v1.0.0
-Status: Active Development
-Last Updated: December 2024
-Next Milestone: v1.1 - Enhanced Analytics
+- **Mobile app** (React Native)
+- **Live webinars** and Q&A sessions
+- **Discussion forums**
+- **Peer-to-peer tutoring**
+- **Certification programs**
+- **AI-powered study recommendations**
+- **Offline content access**
+- **Multi-language support**
+- **Social learning features**
+- **Advanced analytics** and reporting
 
 
-🐛 Known Issues
-See the issues page for a list of known issues and planned improvements.
+## 📊 Project Status
+
+---
+
+- **Current Version**: v1.0.0
+- **Status**: Active Development
+- **Last Updated**: December 2024
+- **Next Milestone**: v1.1 - Enhanced Analytics
+
+## 🐛 Known Issues
+
+---
+
+- **See the** issues page for a list of known issues and planned improvements
 
 ## 💬 Support
 
@@ -469,65 +481,30 @@ Need help? Here's how to get support:
 - **TypeScript Handbook**
 - **Netlify Documentation**
 
-📸 Screenshots
+## 📸 Screenshots
 
-### Landing Page
+### 🏠 Landing Page
 <div align="center">
   <img src="src/assets/hero-medical-education.jpg" alt="Landing Page" width="800" style="border-radius: 8px;">
 </div>
 
-### Resources Library
+### 📚 Resources Library
 <div align="center">
   <img src="public/placeholder.jpg" alt="Resources Library" width="800" style="border-radius: 8px;">
 </div>
 
-### Admin Dashboard
+### 🎛️ Admin Dashboard
 <div align="center">
   <img src="public/placeholder.jpg" alt="Admin Dashboard" width="800" style="border-radius: 8px;">
 </div>
 
-### Video Player
+### 🎥 Video Player
 <div align="center">
   <img src="public/placeholder.jpg" alt="Video Player" width="800" style="border-radius: 8px;">
 </div>
-
-⚡ Performance
-
-Lighthouse Score: 95+ (Performance, Accessibility, Best Practices, SEO)
-Bundle Size: < 500KB (gzipped)
-First Contentful Paint: < 1.5s
-Time to Interactive: < 3s
-Mobile Optimized: Yes
-
-
-🔐 Security
-
-✅ HTTPS enforced
-✅ Row Level Security (RLS) in database
-✅ Input validation and sanitization
-✅ CSRF protection
-✅ XSS prevention
-✅ SQL injection prevention
-✅ Secure authentication (Supabase Auth)
-✅ Environment variables for secrets
-✅ Regular dependency updates
-
-Report Security Issues: Please email security@taichienerves.com
 
 <div align="center">
 Built with ❤️ for Healthcare Education
 ⭐ Star this repo if you find it helpful!
 ⬆ Back to Top
 </div>
-
-📚 Additional Resources
-
-Supabase Documentation
-React Documentation
-Tailwind CSS Documentation
-TypeScript Handbook
-Netlify Documentation
-
-
-Last Updated: March 30, 2026.
-Maintained by: Taichi Nerves Academy Team
