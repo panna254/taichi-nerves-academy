@@ -509,7 +509,9 @@ Need help? Here's how to get support:
 </div>
 
 <div align="center">
-Built for Healthcare Education
-Star this repo if you find it helpful!
-⬆ Back to Top
+
+- **Built for Healthcare Education**
+- **Star this repo if you find it helpful!**
+- **⬆ Back to Top**
+
 </div>
