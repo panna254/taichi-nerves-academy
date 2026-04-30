@@ -395,9 +395,9 @@ Distributed under the MIT License. See LICENSE for more information.
 ### Contact
 **Project Maintainer:** Moses Oketch
 
-**Email:** oketchonyango19@gmail.com
-**GitHub:** @panna254
-**Project Link:** https://github.com/panna254/taichi-nerves-academy
+- **Email:** - oketchonyango19@gmail.com
+- **GitHub:** - @panna254
+- **Project Link:** - https://github.com/panna254/taichi-nerves-academy
 
 
 ## 🙏 Acknowledgments
