@@ -222,51 +222,51 @@ VITE_APP_ENV=development
 
 ```bash
 taichi-nerves-academy/
-├── 📁 public/                 # Static assets
-│   ├── 🖼️ logo.png
-│   ├── 🖼️ hero-medical-education.jpg
-│   ├── 🖼️ placeholder.jpg
-│   └── 📱 app icons (android-chrome-*.png, apple-touch-icon.png)
-├── 📁 src/
-│   ├── 🧩 components/         # React components
-│   │   ├── 🛠️ admin/         # Admin dashboard components
-│   │   ├── 📐 layout/        # Layout components (Header, Footer)
-│   │   ├── 👨‍🎓 learner/       # Learner-facing components
-│   │   └── 🎨 ui/            # Reusable UI components
-│   ├── 🪝 hooks/             # Custom React hooks
-│   │   ├── 🔐 useAuth.tsx    # Authentication hook
-│   │   ├── 💳 useSubscription.ts
-│   │   └── 👨‍💼 useAdmin.ts
-│   ├── 📚 lib/               # Utilities and configs
-│   │   ├── 🗄️ supabase.ts    # Supabase client
-│   │   └── 🛠️ utils.ts       # Helper functions
-│   ├── 📄 pages/             # Page components
-│   │   ├── 🛠️ admin/         # Admin pages
-│   │   ├── 🏠 Home.tsx
-│   │   ├── 📚 Topics.tsx
-│   │   ├── 📖 Resources.tsx
-│   │   └── 💳 Membership.tsx
-│   ├── 🛠️ services/          # API services
-│   │   ├── 🛠️ adminService.ts
-│   │   ├── 📊 analyticsService.ts
-│   │   └── 📚 contentService.ts
-│   ├── 📝 types/             # TypeScript type definitions
-│   ├── 🎯 App.tsx            # Main App component
-│   ├── 🚀 main.tsx           # Entry point
-│   └── 🎨 index.css          # Global styles
-├── 🗄️ database/
-│   └── 📋 schema.sql         # Database schema
-├── 🔧 .env.example           # Environment variables template
-├── 📦 package.json
-├── ⚙️ tsconfig.json
-├── 🛠️ vite.config.ts
-└── 📖 README.md
+├── public/                 # Static assets
+│   ├──logo.png
+│   ├──hero-medical-education.jpg
+│   ├──placeholder.jpg
+│   └──app icons (android-chrome-*.png, apple-touch-icon.png)
+├── src/
+│   ├── components/         # React components
+│   │   ├── admin/         # Admin dashboard components
+│   │   ├── layout/        # Layout components (Header, Footer)
+│   │   ├── learner/       # Learner-facing components
+│   │   └── ui/            # Reusable UI components
+│   ├── hooks/             # Custom React hooks
+│   │   ├── useAuth.tsx    # Authentication hook
+│   │   ├── useSubscription.ts
+│   │   └── useAdmin.ts
+│   ├── lib/               # Utilities and configs
+│   │   ├── supabase.ts    # Supabase client
+│   │   └── utils.ts       # Helper functions
+│   ├── pages/             # Page components
+│   │   ├── admin/         # Admin pages
+│   │   ├── Home.tsx
+│   │   ├── Topics.tsx
+│   │   ├── Resources.tsx
+│   │   └── Membership.tsx
+│   ├── services/          # API services
+│   │   ├── adminService.ts
+│   │   ├── analyticsService.ts
+│   │   └── contentService.ts
+│   ├── types/             # TypeScript type definitions
+│   ├── App.tsx            # Main App component
+│   ├── main.tsx           # Entry point
+│   └── index.css          # Global styles
+├── database/
+│   └── schema.sql         # Database schema
+├── .env.example           # Environment variables template
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
 
-🎛️ Admin Dashboard
+Admin Dashboard
 The admin dashboard provides comprehensive content management capabilities:
 
-### 📋 Features
+### Features
 
 - **Dashboard**: Overview with key metrics and analytics
 - **Media Library**: Manage all content (videos, notes, podcasts, quizzes)
@@ -274,13 +274,13 @@ The admin dashboard provides comprehensive content management capabilities:
 - **Analytics**: Content performance and user engagement
 - **Settings**: Platform configuration
 
-### 🔐 Access Admin Dashboard
+### Access Admin Dashboard
 
 - **Navigate to** `/admin`
 - **Login with** admin credentials
 - **Explore the** dashboard features
 
-### 👨‍💼 Making a User Admin
+### Making a User Admin
 
 Run this SQL in Supabase SQL Editor:
 
@@ -293,9 +293,9 @@ INSERT INTO admin_users (user_id, role)
 VALUES ('user-id-here', 'admin');
 ```
 
-🗄️ Database Schema
+Database Schema
 
-### 📋 Core Tables
+### Core Tables
 
 ---
 
@@ -310,7 +310,7 @@ VALUES ('user-id-here', 'admin');
 - **user_progress**: Learning progress tracking
 - **admin_users**: Admin role assignments
 
-### 🛠️ Setup Database
+### Setup Database
 
 ---
 
@@ -326,7 +326,7 @@ VALUES ('user-id-here', 'admin');
 - **Audit logging support**
 - **Soft delete capability**
 
-🚀 Deployment
+Deployment
 Deploy to Netlify
 
 ### 🌐 Deploy to Netlify
@@ -342,17 +342,17 @@ Deploy to Netlify
 - **Build command**: `npm run build`
 - **Publish directory**: `dist`
 
-#### 🔐 Add Environment Variables
+#### Add Environment Variables
 
 - **Go to** Site settings → Environment variables
 - **Add all** variables from `.env.example`
 
-#### 🚀 Deploy
+#### Deploy
 
 - **Click** "Deploy site"
 - **Wait for** build to complete
 
-### 🌍 Custom Domain (Optional)
+### Custom Domain (Optional)
 
 - **Go to** Domain settings in Netlify
 - **Add custom** domain
@@ -360,7 +360,7 @@ Deploy to Netlify
 - **Enable HTTPS** (automatic with Netlify)
 
 
-🤝 Contributing
+Contributing
 Contributions are what make the open-source community amazing! Any contributions you make are greatly appreciated.
 
 ### How to Contribute
@@ -389,10 +389,10 @@ git push origin feature/AmazingFeature
 - **Update documentation as needed**
 
 
-📝 License
+License
 Distributed under the MIT License. See LICENSE for more information.
 
-📧 Contact
+Contact
 Project Maintainer: Moses Oketch
 
 Email: oketchonyango19@gmail.com
@@ -454,13 +454,13 @@ Project Link: https://github.com/panna254/taichi-nerves-academy
 - **Last Updated**: December 2024
 - **Next Milestone**: v1.1 - Enhanced Analytics
 
-## 🐛 Known Issues
+## Known Issues
 
 ---
 
 - **See the** issues page for a list of known issues and planned improvements
 
-## 💬 Support
+## Support
 
 Need help? Here's how to get support:
 
@@ -471,7 +471,7 @@ Need help? Here's how to get support:
 - **Email**: Contact oketchonyango19@gmail.com
 - **Community**: Join our discussions (coming soon)
 
-## 📚 Additional Resources
+## Additional Resources
 
 ---
 
@@ -504,7 +504,7 @@ Need help? Here's how to get support:
 </div>
 
 <div align="center">
-Built with ❤️ for Healthcare Education
-⭐ Star this repo if you find it helpful!
+Built for Healthcare Education
+Star this repo if you find it helpful!
 ⬆ Back to Top
 </div>
